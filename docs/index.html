@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Steampunk Menu</title>
   <link rel="stylesheet" href="css/steampunk-cards.css">
   <link rel="manifest" href="manifest.json">
@@ -12,8 +12,8 @@
     .collection-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr) !important;
-      gap: 10px;
-      margin-top: 10px;
+      gap: 8px;
+      margin-top: 8px;
     }
     .collection-card-item {
       background: rgba(50,30,20,0.4);
@@ -55,13 +55,13 @@
     .weaker-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 12px;
+      gap: 8px;
+      margin-top: 8px;
     }
     .weaker-card-tile {
       background: rgba(30,20,18,0.45);
       border: 1px solid rgba(200,170,120,0.08);
-      padding: 8px;
+      padding: 6px;
       border-radius: 8px;
       text-align: center;
       display: flex;
@@ -290,17 +290,22 @@
 
     /* Tiles grid */
     .tiles{
-      margin-top: 10px;
+      margin-top: 8px;
       display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:8px;
+      width:100%;
+      max-width:100%;
     }
 
     .tile{
       position:relative;
       border-radius: var(--tile-radius);
-      padding: 10px 10px 12px;
-      min-height: 96px;
+      padding: 8px 8px 10px;
+      min-height: 84px;
+      width:100%;
+      max-width:100%;
+      min-width:0;
       background:
         radial-gradient(140px 120px at 30% 25%, rgba(255,220,140,0.16), transparent 60%),
         linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.65)),
@@ -310,6 +315,63 @@
       cursor:pointer;
       user-select:none;
       transition: transform .08s ease, filter .08s ease;
+    }
+    /* Ensure any alternate card class is fluid */
+    .sp-card { width:100%; max-width:100%; min-width:0; box-sizing:border-box; }
+    /* Ensure tiles are fluid and don't use fixed px widths */
+    .tiles .tile { width: 100%; max-width: 100%; box-sizing: border-box; }
+
+    /* Mobile: force 3 columns and make cards keep aspect ratio */
+    @media (max-width: 480px) {
+      .tiles { grid-template-columns: repeat(3, minmax(0, 1fr)); gap:6px; padding:4px 6px; width:100%; max-width:100%; }
+      .collection-grid, .weaker-grid { gap:6px; margin-top:6px; width:100%; }
+      .tile { padding:6px 6px 8px; min-height: 0; aspect-ratio: 2 / 3; min-width: 0; }
+      .weaker-card-tile { padding:4px; }
+      .tile .icon{ width:28px; height:28px; margin-bottom:6px; }
+      .collection-card-name, .tile .label { font-size: 12px; }
+      .tiles .tile { box-sizing: border-box; }
+    }
+
+    /* Stronger constraints for narrow phones (<=425px) to guarantee 3 columns */
+    @media (max-width: 425px) {
+      /* 1) Забрати зайві відступи сторінки */
+      html, body { margin: 0 !important; padding: 0 !important; }
+
+      .page, .main-content, .page-content, .phone {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+      }
+
+      /* 2) Дати колоді використовувати всю ширину і трохи притиснути до країв */
+      .tiles, .cards-grid, .deck-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        padding: 0 6px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        justify-items: stretch !important;
+      }
+
+      /* 3) Дозволити карткам розтягуватись по колонці */
+      .tile, .tiles .tile, .cards-grid .sp-card, .deck-grid .sp-card, .sp-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        padding: 4px !important;
+        aspect-ratio: 0.6 / 1 !important;
+      }
+
+      /* Джерело горизонтального overflow */
+      .screen { width: 100% !important; }
+      .page-content { overflow-x: visible !important; }
+
+      /* 4) додаткова страховка для внутрішніх елементів карти */
+      .deck-grid .sp-card * { min-width: 0 !important; }
     }
     .tile:hover{ filter: brightness(1.05); }
     .tile:active{ transform: translateY(1px); }
@@ -2478,16 +2540,17 @@
       letter-spacing: 1px;
       z-index: 3;
       text-transform: uppercase;
+      display: none; /* hide rarity on the card - show only in description */
     }
 
     /* Deck Grid 3x3 */
     .deck-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-bottom: 16px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 0;
       align-items: start;
-      justify-items: center;
+      justify-items: stretch;
     }
 
     /* Карти в колоді використовують стилі з steampunk-cards.css */
@@ -2918,16 +2981,319 @@
       .collection-card-name { font-size: 12px; }
       .collection-card-status { font-size: 10px; }
     }
+  /* Strong override: force 3 columns on very narrow screens and remove fixed container limits */
+  @media (max-width:425px){
+    /* keep a comfortable inner padding but allow full-width layout */
+    html, body, .phone, #main-content, .page { width:100% !important; max-width:100% !important; padding:16px !important; margin:0 !important; overflow-x:visible !important; }
+
+    /* тільки сторінка колоди: мінімум відступів */
+    #page-deck { padding: 0 !important; }
+    #page-deck .screen { padding: 8px !important; }
+
+    /* main grids used in project */
+    .tiles, .cards-grid { grid-template-columns: repeat(3, minmax(0,1fr)) !important; gap:6px !important; padding:6px 8px !important; width:100% !important; max-width:100% !important; }
+
+    /* individual card blocks (project uses both .tile and .sp-card) */
+    .tiles .tile, .cards-grid .sp-card, .sp-card, .tile { min-width:0 !important; width:100% !important; padding:4px !important; aspect-ratio: 0.6 / 1 !important; box-sizing: border-box !important; }
+
+    /* collection / weaker grids */
+    .collection-grid, .weaker-grid { width:100% !important; max-width:100% !important; gap:6px !important; }
+
+    /* Tweak small visuals */
+    .tile .icon, .sp-card .element-emoji { width:20px !important; height:20px !important; margin-bottom:4px !important; }
+    .tile .label, .collection-card-name, .collection-card-status, .sp-card .rarity-badge { font-size:11px !important; }
+
+    /* ensure children can shrink */
+    .tiles .tile, .cards-grid .sp-card { flex: 0 1 auto !important; }
+  }
+
+  </style>
+  
+  <style>
+  /* ===== iPhone 12 mini portrait: DECK 3x3 без прокруту ===== */
+  @media (max-width: 390px) and (orientation: portrait) {
+
+    /* 1) Ніякого скролу на сторінці колоди */
+    #page-deck{
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    /* 2) Екран колоди займає весь в’юпорт */
+    #page-deck .screen{
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+      padding: 8px;
+      gap: 6px;
+      overflow: hidden;
+    }
+
+    /* 3) Стиснути верхні блоки (мінімум відступів) */
+    #page-deck .topbar{ margin: 0 !important; }
+    #page-deck .deck-header{ margin: 0 !important; padding: 8px 10px !important; }
+    #page-deck .hint{ margin: 0 !important; padding: 6px 10px !important; }
+
+    /* 4) Сховати все, що нижче гріда */
+    #page-deck .extras-title,
+    #page-deck .extras-grid,
+    #page-deck .link-like,
+    #page-deck .menu-list{
+      display: none !important;
+    }
+
+    /* 5) Сам грід займає весь залишок висоти і є строго 3x3 */
+    #page-deck .deck-grid{
+      flex: 1 1 auto;
+      min-height: 0;
+
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
+
+      gap: 6px !important;
+      margin: 0 !important;
+
+      justify-items: stretch;
+      align-items: stretch;
+    }
+
+    /* 6) Картка заповнює клітинку */
+    #page-deck .deck-grid .sp-card{
+      width: 100% !important;
+      height: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+
+      aspect-ratio: auto !important;
+      overflow: hidden;
+    }
+  }
+  </style>
+
+  <style>
+  /* ===== DECK: стабільний 3×3, пропорційні карти ===== */
+  @media (max-width: 425px) {
+
+    /* Сторінка колоди без скролу */
+    #page-deck{
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    /* Верх + грід по колонці */
+    #page-deck .screen{
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 8px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    /* DeckGrid займає весь залишок */
+    #page-deck #deckGrid{
+      flex: 1 1 auto;
+      min-height: 0;
+
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: repeat(3, minmax(0, 1fr));
+      gap: 6px;
+
+      margin: 0;
+      padding: 0;
+      align-items: stretch;
+      justify-items: stretch;
+      overflow: hidden;
+    }
+
+    /* Якщо хочете 3×3 БЕЗ прокрутки — extras треба сховати */
+    #page-deck .extras-title,
+    #page-deck .extras-grid{
+      display: none !important;
+    }
+
+    /* Перекрити aspect-ratio для карт в колоді — пропорційні карти */
+    #page-deck #deckGrid .sp-card{
+      width: 100% !important;
+      height: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+
+      aspect-ratio: 2 / 3 !important;
+
+      overflow: hidden;
+      padding: 2px !important;
+    }
+
+    /* Запобігаємо внутрішньому overflow через абсолютні елементи */
+    #page-deck #deckGrid .sp-card *{
+      min-width: 0 !important;
+    }
+
+    /* Точкова економія висоти для верхніх блоків (якщо все ще не влазить) */
+    #page-deck .topbar{ padding: 6px 8px 8px !important; }
+    #page-deck .deck-header{ padding: 8px 10px !important; }
+    #page-deck .hint{ padding: 6px 10px !important; }
+    #page-deck #deckGrid{ gap: 4px !important; }
+  }
+  </style>
+
+  <style>
+  /* ===== Deck UI compact on phone ===== */
+  @media (max-width: 425px) and (orientation: portrait) {
+
+    /* 1) Іконка стихії (emoji) менша */
+    #page-deck #deckGrid .sp-card .element-emoji{
+      width: 14px !important;
+      height: 14px !important;
+      font-size: 14px !important;
+      line-height: 1 !important;
+      margin: 0 !important;
+    }
+
+    /* 2) Шестерня-контейнер іконки — трохи менший і ближче до верху */
+    #page-deck #deckGrid .sp-card .corner-gear{
+      transform: scale(0.82);
+      transform-origin: top left;
+    }
+
+    /* 3) Плашка сили — менша */
+    #page-deck #deckGrid .sp-card .power-plate{
+      height: 34px;
+      border-radius: 14px;
+      padding: 2px 6px;
+    }
+
+    /* 4) Число сили — менше */
+    #page-deck #deckGrid .sp-card .power-value{
+      font-size: 20px !important;
+      letter-spacing: 0.2px;
+    }
+
+    /* 5) Бейдж рідкості — компактніший */
+    #page-deck #deckGrid .sp-card .rarity-badge{
+      top: 8px !important;
+      right: 8px !important;
+      padding: 2px 6px !important;
+      border-radius: 8px !important;
+      font-size: 9px !important;
+      letter-spacing: 0.6px !important;
+    }
+
+    /* ===== Нормалізувати HUD (topbar + pill) ===== */
+    #page-deck .topbar{
+      padding: 6px 8px !important;
+      border-radius: 14px !important;
+      margin-bottom: 6px !important;
+    }
+
+    #page-deck .topbar .back-btn{
+      padding: 5px 8px !important;
+      font-size: 12px !important;
+    }
+
+    #page-deck .pill{
+      padding: 4px 8px !important;
+      gap: 5px !important;
+      font-size: 12px !important;
+    }
+
+    #page-deck .gem,
+    #page-deck .coin{
+      width: 8px !important;
+      height: 8px !important;
+    }
+
+    #page-deck .deck-header{
+      padding: 8px 10px !important;
+      margin-bottom: 6px !important;
+    }
+    #page-deck .deck-title{ font-size: 13px !important; }
+    #page-deck .deck-power{ font-size: 13px !important; }
+
+    /* Важливе: перекриваємо глобальний aspect-ratio саме для карт в колоді */
+    #page-deck #deckGrid .sp-card{
+      aspect-ratio: 2 / 3 !important;
+    }
+  }
+  </style>
+
+  <style>
+  /* === FULL-WIDTH HUD + FULL-WIDTH DECK GRID (mobile) === */
+  @media (max-width: 425px) and (orientation: portrait) {
+
+    /* 1) Прибрати будь-яке “звуження/центрування” рамки телефону */
+    .phone, #app, #page-deck, #page-deck .screen{
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+    }
+
+    /* 2) Якщо body/html десь центруються — примусово в нормальний flow */
+    html, body{
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    /* 3) HUD на всю ширину */
+    #page-deck .topbar,
+    #page-deck .deck-header,
+    #page-deck .hint{
+      width: 100% !important;
+      max-width: 100% !important;
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    /* 4) Екран колоди: мінімум бокових відступів, щоб “розширити” */
+    #page-deck .screen{
+      padding-left: 8px !important;
+      padding-right: 8px !important;
+      box-sizing: border-box !important;
+      align-items: stretch !important;
+    }
+
+    /* 5) Сітка карт на всю ширину */
+    #page-deck #deckGrid{
+      width: 100% !important;
+      max-width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+
+      display: grid !important;
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+      gap: 6px !important;
+
+      justify-items: stretch !important;
+      align-items: stretch !important;
+      box-sizing: border-box !important;
+    }
+
+    /* 6) Картки розтягуються по колонці */
+    #page-deck #deckGrid .sp-card{
+      width: 100% !important;
+      max-width: 100% !important;
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+    }
+  }
+
+  /* Якщо body або .phone все ще центруються в layout — жорсткий оверрайд */
+  @media (max-width: 425px) and (orientation: portrait) {
+    body{ display: block !important; }
+    .phone{ border-radius: 0 !important; }
+  }
   </style>
 </head>
 <body>
-  <!-- Orientation lock overlay (portrait-only) -->
-  <div id="orientation-lock" aria-hidden="true">
-    <div class="lock-box">
-      <div class="lock-icon">📱</div>
-      <div class="lock-text">Поверніть телефон вертикально</div>
-    </div>
-  </div>
+  <!-- orientation overlay removed -->
 
   <!-- Auth overlay -->
   <div class="auth-overlay hidden" id="authOverlay">
@@ -6162,6 +6528,6 @@
     // Tiles (removed since we're using page navigation now)
 
   </script>
-  <script src="js/orientation.js"></script>
+  <!-- orientation script removed -->
 </body>
 </html>

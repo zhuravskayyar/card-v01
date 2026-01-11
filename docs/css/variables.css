@@ -114,8 +114,6 @@
   --card-height-tablet: 210px;
   --card-width-mobile: 120px;
   --card-height-mobile: 180px;
-  --card-width-xs: 95px;
-  --card-height-xs: 145px;
   
   /* Legacy card sizes (для старих .card) */
   --card-width-legacy: 120px;
