@@ -2,9 +2,10 @@
 <html lang="uk">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>Steampunk Menu</title>
   <link rel="stylesheet" href="css/steampunk-cards.css">
+  <link rel="manifest" href="manifest.json">
   <style>
     /* Коллекція: грид карт */
     .collection-grid {
@@ -2919,6 +2920,14 @@
   </style>
 </head>
 <body>
+  <!-- Orientation lock overlay (portrait-only) -->
+  <div id="orientation-lock" aria-hidden="true">
+    <div class="lock-box">
+      <div class="lock-icon">📱</div>
+      <div class="lock-text">Поверніть телефон вертикально</div>
+    </div>
+  </div>
+
   <!-- Auth overlay -->
   <div class="auth-overlay hidden" id="authOverlay">
     <div class="auth-box">
@@ -6152,5 +6161,6 @@
     // Tiles (removed since we're using page navigation now)
 
   </script>
+  <script src="js/orientation.js"></script>
 </body>
 </html>
