@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Card System Integration Test</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    .test-result { margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+    .pass { background: #d4edda; }
+    .fail { background: #f8d7da; }
+  </style>
+</head>
+<body>
+  <h1>Card System Integration Test</h1>
+  <div id="results"></div>
+
+  <script src="js/data/cards.js"></script>
+  <script src="js/game/power.js"></script>
+  <script src="js/data/cards_index.js"></script>
+
+  <script>
+    const results = document.getElementById('results');
+    const testResults = [];
+    
+    function test(name, fn) {
+      try {
+        fn();
+        testResults.push({ name, pass: true });
+        console.log(`✓ ${name}`);
+      } catch (error) {
+        testResults.push({ name, pass: false, error: error.message });
+        console.error(`✗ ${name}: ${error.message}`);
+      }
+    }
+    
+    // Test 1: Card data loading
+    test('Cards data loaded', () => {
+      if (!window.ALL_CARDS || !Array.isArray(window.ALL_CARDS)) {
+        throw new Error('ALL_CARDS not loaded');
+      }
+      if (window.ALL_CARDS.length !== 16) {
+        throw new Error(`Expected 16 cards, got ${window.ALL_CARDS.length}`);
+      }
+    });
+    
+    // Test 2: CARDS_BY_ID index
+    test('CARDS_BY_ID index populated', () => {
+      if (!window.CARDS_BY_ID) {
+        throw new Error('CARDS_BY_ID not available');
+      }
+      if (Object.keys(window.CARDS_BY_ID).length !== 16) {
+        throw new Error(`CARDS_BY_ID has ${Object.keys(window.CARDS_BY_ID).length} entries, expected 16`);
+      }
+    });
+    
+    // Test 3: getRandomCards function
+    test('getRandomCards works', () => {
+      const cards = window.getRandomCards(9);
+      if (!Array.isArray(cards)) {
+        throw new Error('getRandomCards did not return array');
+      }
+      if (cards.length !== 9) {
+        throw new Error(`getRandomCards(9) returned ${cards.length} cards`);
+      }
+      // Check that all items have required fields
+      cards.forEach(card => {
+        if (!card.id || !card.element || !card.basePower || !card.name) {
+          throw new Error(`Card ${card.id} missing required fields`);
+        }
+      });
+    });
+    
+    // Test 4: Deck split simulation
+    test('Deck split works correctly', () => {
+      const allSelected = window.getRandomCards(16);
+      const deck = allSelected.slice(0, 9).map(card => ({ id: card.id, level: 1 }));
+      const collection = allSelected.slice(9, 16).map(card => ({ id: card.id, level: 1 }));
+      
+      if (deck.length !== 9) {
+        throw new Error(`Deck should have 9 cards, got ${deck.length}`);
+      }
+      if (collection.length !== 7) {
+        throw new Error(`Collection should have 7 cards, got ${collection.length}`);
+      }
+    });
+    
+    // Test 5: getPower function
+    test('getPower calculation works', () => {
+      const card = window.ALL_CARDS[0];
+      const power1 = window.getPower(card, 1);
+      const power5 = window.getPower(card, 5);
+      
+      if (typeof power1 !== 'number') {
+        throw new Error('getPower did not return number');
+      }
+      if (power5 <= power1) {
+        throw new Error('Power at level 5 should be greater than level 1');
+      }
+      // Check formula: basePower * (upgradeMult)^(level-1)
+      const expected = Math.round(card.basePower * Math.pow(card.upgradeMult, 4));
+      if (power5 !== expected) {
+        throw new Error(`Power5 should be ${expected}, got ${power5}`);
+      }
+    });
+    
+    // Test 6: Multiple random selections should differ
+    test('getRandomCards returns different selections', () => {
+      const set1 = window.getRandomCards(5).map(c => c.id).sort();
+      const set2 = window.getRandomCards(5).map(c => c.id).sort();
+      
+      // With high probability, two random selections of 5 from 16 should differ
+      const same = set1.join(',') === set2.join(',');
+      if (same) {
+        // This is probabilistically unlikely but not impossible
+        console.warn('Random selections happened to be identical (unlikely but possible)');
+      }
+    });
+    
+    // Test 7: getCardById function
+    test('getCardById retrieves correct cards', () => {
+      const cardId = window.ALL_CARDS[0].id;
+      const found = window.getCardById(cardId);
+      
+      if (!found) {
+        throw new Error(`Card ${cardId} not found`);
+      }
+      if (found.id !== cardId) {
+        throw new Error(`Card ID mismatch: ${found.id} !== ${cardId}`);
+      }
+    });
+    
+    // Test 8: Element grouping
+    test('CARDS_BY_ELEMENT grouping exists', () => {
+      if (!window.CARDS_BY_ELEMENT) {
+        throw new Error('CARDS_BY_ELEMENT not available');
+      }
+      const elements = ['fire', 'water', 'air', 'earth'];
+      elements.forEach(el => {
+        if (!window.CARDS_BY_ELEMENT[el]) {
+          throw new Error(`Element '${el}' not found in grouping`);
+        }
+        if (window.CARDS_BY_ELEMENT[el].length !== 4) {
+          throw new Error(`Element '${el}' should have 4 cards, has ${window.CARDS_BY_ELEMENT[el].length}`);
+        }
+      });
+    });
+    
+    // Display results
+    const html = ['<h2>Test Results:</h2>'];
+    testResults.forEach(result => {
+      const className = result.pass ? 'pass' : 'fail';
+      const icon = result.pass ? '✓' : '✗';
+      const message = result.error ? ` - ${result.error}` : '';
+      html.push(`<div class="test-result ${className}">${icon} ${result.name}${message}</div>`);
+    });
+    
+    const passed = testResults.filter(r => r.pass).length;
+    const total = testResults.length;
+    html.push(`<h2>Summary: ${passed}/${total} tests passed</h2>`);
+    
+    results.innerHTML = html.join('');
+  </script>
+</body>
+</html>

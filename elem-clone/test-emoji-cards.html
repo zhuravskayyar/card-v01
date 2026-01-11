@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Тест емодзі карт</title>
+  <link rel="stylesheet" href="css/steampunk-cards.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 40px;
+      min-height: 100vh;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 30px;
+      justify-content: center;
+      align-items: flex-start;
+      background:
+        radial-gradient(ellipse at top, rgba(212,175,55,0.1) 0%, transparent 60%),
+        radial-gradient(ellipse at bottom, rgba(139,69,19,0.1) 0%, transparent 60%),
+        linear-gradient(180deg, #120c08, #070504);
+      font-family: 'Georgia', serif;
+    }
+
+    .test-section {
+      text-align: center;
+    }
+
+    .test-label {
+      color: #f2d07a;
+      font-size: 14px;
+      margin-bottom: 10px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .info-panel {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.9);
+      border: 2px solid #c59b3c;
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 300px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.9);
+    }
+
+    .info-panel h2 {
+      color: #f2d07a;
+      margin: 0 0 15px 0;
+      font-size: 18px;
+    }
+
+    .info-panel p {
+      color: #f4e6c6;
+      font-size: 14px;
+      line-height: 1.6;
+      margin: 10px 0;
+    }
+
+    .emoji-list {
+      margin: 15px 0;
+    }
+
+    .emoji-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 8px 0;
+      padding: 8px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 5px;
+    }
+
+    .emoji-item-icon {
+      font-size: 24px;
+    }
+
+    .emoji-item-text {
+      color: #f4e6c6;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <div class="info-panel">
+    <h2>🎴 Емодзі Стихії</h2>
+    <p>Нові анімовані емодзі значки замість SVG:</p>
+    
+    <div class="emoji-list">
+      <div class="emoji-item">
+        <span class="emoji-item-icon">🔥</span>
+        <span class="emoji-item-text">Вогонь - мерехтіння полум'я</span>
+      </div>
+      <div class="emoji-item">
+        <span class="emoji-item-icon">💧</span>
+        <span class="emoji-item-text">Вода - падіння краплі</span>
+      </div>
+      <div class="emoji-item">
+        <span class="emoji-item-icon">💨</span>
+        <span class="emoji-item-text">Повітря - обертання вітру</span>
+      </div>
+      <div class="emoji-item">
+        <span class="emoji-item-icon">🍃</span>
+        <span class="emoji-item-text">Земля - гойдання листка</span>
+      </div>
+    </div>
+    
+    <p style="margin-top: 15px; opacity: 0.8; font-size: 12px;">
+      Наведіть на карту для посилених ефектів
+    </p>
+  </div>
+
+  <div class="test-section">
+    <div class="test-label">🔥 Вогонь - Легенда</div>
+    <div class="sp-card fire legend">
+      <div class="corner-gear">
+        <div class="element-emoji fire-emoji">🔥</div>
+      </div>
+      <div class="power-plate">
+        <div class="power-value">15</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <div class="test-label">💧 Вода - Епік</div>
+    <div class="sp-card water epic">
+      <div class="corner-gear">
+        <div class="element-emoji water-emoji">💧</div>
+      </div>
+      <div class="power-plate">
+        <div class="power-value">12</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <div class="test-label">💨 Повітря - Рідкісна</div>
+    <div class="sp-card air rare">
+      <div class="corner-gear">
+        <div class="element-emoji air-emoji">💨</div>
+      </div>
+      <div class="power-plate">
+        <div class="power-value">9</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <div class="test-label">🍃 Земля - Звичайна</div>
+    <div class="sp-card earth common">
+      <div class="corner-gear">
+        <div class="element-emoji earth-emoji">🍃</div>
+      </div>
+      <div class="power-plate">
+        <div class="power-value">6</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="card-renderer.js"></script>
+  <script>
+    // Тест CardRenderer з емодзі
+    console.log('🎴 Тестування CardRenderer з емодзі');
+    
+    if (window.cardRenderer) {
+      const testCards = [
+        {
+          id: 'TEST-FIRE',
+          element: 'fire',
+          rarity: 'R5',
+          basePower: 15,
+          name: 'Вогняний дракон'
+        },
+        {
+          id: 'TEST-WATER',
+          element: 'water',
+          rarity: 'R4',
+          basePower: 12,
+          name: 'Водяний левіафан'
+        },
+        {
+          id: 'TEST-AIR',
+          element: 'air',
+          rarity: 'R3',
+          basePower: 9,
+          name: 'Повітряний елементаль'
+        },
+        {
+          id: 'TEST-EARTH',
+          element: 'earth',
+          rarity: 'R1',
+          basePower: 6,
+          name: 'Земляний голем'
+        }
+      ];
+
+      console.log('Згенеровано карти з емодзі:');
+      testCards.forEach(card => {
+        const html = window.cardRenderer.render(card);
+        console.log(`${card.name}: ${card.element} 🎴`);
+      });
+    }
+
+    // Паралакс ефект для всіх карт
+    document.querySelectorAll('.sp-card').forEach(card => {
+      card.addEventListener('mousemove', function(e) {
+        const rect = this.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        
+        const x = (e.clientX - centerX) / 50;
+        const y = (e.clientY - centerY) / 50;
+        
+        this.style.transform = `
+          translateY(-15px) 
+          scale(1.08) 
+          rotateX(${5 - y}deg) 
+          rotateY(${-2 + x}deg)
+        `;
+      });
+
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = '';
+      });
+    });
+  </script>
+</body>
+</html>

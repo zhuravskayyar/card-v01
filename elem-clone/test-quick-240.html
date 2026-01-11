@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Швидка перевірка 240 карт</title>
+  <style>
+    body { 
+      font-family: monospace; 
+      padding: 20px;
+      background: #1a120c;
+      color: #f4e6c6;
+    }
+    .pass { color: #2ecc71; font-weight: bold; }
+    .fail { color: #e74c3c; font-weight: bold; }
+    .info { color: #3498db; }
+    pre { background: #120d0a; padding: 15px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>🧪 Швидка перевірка системи 240 карт</h1>
+  <pre id="output">Завантаження...</pre>
+
+  <script type="module">
+    import { CARDS, getCardById, getAllCardIds, getCardsByElement, getCardsByFaction, getCardsByRarity } from './js/data/cards.js';
+
+    const output = document.getElementById('output');
+    let log = '';
+
+    function test(name, condition, expected, actual) {
+      const pass = condition;
+      log += `${pass ? '✅' : '❌'} ${name}\n`;
+      if (!pass) {
+        log += `   Очікувалось: ${expected}\n`;
+        log += `   Отримано: ${actual}\n`;
+      }
+    }
+
+    // Основні перевірки
+    test('Загальна кількість карт', CARDS.length === 240, 240, CARDS.length);
+    test('getAllCardIds повертає 240 ID', getAllCardIds().length === 240, 240, getAllCardIds().length);
+
+    // Перевірка стихій
+    test('Карт вогню', getCardsByElement('fire').length === 60, 60, getCardsByElement('fire').length);
+    test('Карт води', getCardsByElement('water').length === 60, 60, getCardsByElement('water').length);
+    test('Карт повітря', getCardsByElement('air').length === 60, 60, getCardsByElement('air').length);
+    test('Карт землі', getCardsByElement('earth').length === 60, 60, getCardsByElement('earth').length);
+
+    // Перевірка рідкості
+    test('Звичайних карт', getCardsByRarity('common').length === 40, 40, getCardsByRarity('common').length);
+    test('Незвичайних карт', getCardsByRarity('uncommon').length === 40, 40, getCardsByRarity('uncommon').length);
+    test('Рідкісних карт', getCardsByRarity('rare').length === 40, 40, getCardsByRarity('rare').length);
+    test('Епічних карт', getCardsByRarity('epic').length === 40, 40, getCardsByRarity('epic').length);
+    test('Легендарних карт', getCardsByRarity('legendary').length === 40, 40, getCardsByRarity('legendary').length);
+    test('Міфічних карт', getCardsByRarity('mythic').length === 40, 40, getCardsByRarity('mythic').length);
+
+    // Перевірка фракцій
+    const factions = [...new Set(CARDS.map(c => c.faction))];
+    test('Кількість фракцій', factions.length === 40, 40, factions.length);
+
+    for (let i = 1; i <= 40; i++) {
+      const fid = `F${String(i).padStart(2, '0')}`;
+      const cards = getCardsByFaction(fid);
+      test(`Фракція ${fid} має 6 карт`, cards.length === 6, 6, cards.length);
+    }
+
+    // Перевірка конкретних карт
+    const f01r1 = getCardById('F01-R1');
+    test('F01-R1 існує', f01r1 !== null, 'об\'єкт', f01r1);
+    test('F01-R1 має назву', f01r1?.name === 'Послушник Попелястого Сонця', 'Послушник Попелястого Сонця', f01r1?.name);
+    test('F01-R1 basePower = 51', f01r1?.basePower === 51, 51, f01r1?.basePower);
+    test('F01-R1 multiplier = 1.00', f01r1?.multiplier === 1.00, 1.00, f01r1?.multiplier);
+
+    const f40r6 = getCardById('F40-R6');
+    test('F40-R6 існує', f40r6 !== null, 'об\'єкт', f40r6);
+    test('F40-R6 має назву', f40r6?.name === 'Перша Скеля, Живий Обіт', 'Перша Скеля, Живий Обіт', f40r6?.name);
+    test('F40-R6 basePower = 90', f40r6?.basePower === 90, 90, f40r6?.basePower);
+    test('F40-R6 multiplier = 2.00', f40r6?.multiplier === 2.00, 2.00, f40r6?.multiplier);
+
+    // Перевірка діапазонів сили
+    const minCard = CARDS.reduce((min, c) => (c.basePower * c.multiplier < min.basePower * min.multiplier ? c : min));
+    const maxCard = CARDS.reduce((max, c) => (c.basePower * c.multiplier > max.basePower * max.multiplier ? c : max));
+    
+    test('Мінімальна сила = 51', minCard.basePower * minCard.multiplier === 51, 51, minCard.basePower * minCard.multiplier);
+    test('Максимальна сила = 180', maxCard.basePower * maxCard.multiplier === 180, 180, maxCard.basePower * maxCard.multiplier);
+
+    // Перевірка унікальності ID
+    const ids = CARDS.map(c => c.id);
+    const uniqueIds = new Set(ids);
+    test('Всі ID унікальні', ids.length === uniqueIds.size, ids.length, uniqueIds.size);
+
+    // Перевірка унікальності імен
+    const names = CARDS.map(c => c.name);
+    const uniqueNames = new Set(names);
+    test('Всі назви унікальні', names.length === uniqueNames.size, names.length, uniqueNames.size);
+
+    // Статистика
+    log += '\n📊 СТАТИСТИКА:\n';
+    log += `Всього карт: ${CARDS.length}\n`;
+    log += `Фракцій: ${factions.length}\n`;
+    log += `Мін. сила: ${minCard.basePower * minCard.multiplier} (${minCard.id})\n`;
+    log += `Макс. сила: ${maxCard.basePower * maxCard.multiplier} (${maxCard.id})\n`;
+    
+    const avgPower = CARDS.reduce((sum, c) => sum + c.basePower * c.multiplier, 0) / CARDS.length;
+    log += `Середня сила: ${avgPower.toFixed(2)}\n`;
+
+    // Приклади карт
+    log += '\n🎴 ПРИКЛАДИ КАРТ:\n\n';
+    
+    log += 'Перша карта (F01-R1):\n';
+    log += `  Назва: ${f01r1.name}\n`;
+    log += `  Фракція: ${f01r1.factionName}\n`;
+    log += `  Стихія: ${f01r1.element}\n`;
+    log += `  Рідкість: ${f01r1.rarityDisplay}\n`;
+    log += `  Сила: ${f01r1.basePower} × ${f01r1.multiplier} = ${f01r1.basePower * f01r1.multiplier}\n\n`;
+    
+    log += 'Остання карта (F40-R6):\n';
+    log += `  Назва: ${f40r6.name}\n`;
+    log += `  Фракція: ${f40r6.factionName}\n`;
+    log += `  Стихія: ${f40r6.element}\n`;
+    log += `  Рідкість: ${f40r6.rarityDisplay}\n`;
+    log += `  Сила: ${f40r6.basePower} × ${f40r6.multiplier} = ${f40r6.basePower * f40r6.multiplier}\n`;
+
+    output.textContent = log;
+  </script>
+</body>
+</html>

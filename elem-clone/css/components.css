@@ -1,0 +1,410 @@
+/* Components */
+
+/* Buttons */
+.btn {
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: all var(--transition-base);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.55);
+  border: 1px solid rgba(242,208,122,0.22);
+  position: relative;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: calc(var(--radius-md) - 4px);
+  border: 1px solid rgba(242,208,122,0.15);
+  pointer-events: none;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  background:
+    linear-gradient(180deg, rgba(255,220,140,0.10), rgba(0,0,0,0.35)),
+    linear-gradient(180deg, var(--brass-0), var(--brass-2));
+  color: var(--bg-0);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+}
+
+.btn-secondary {
+  background:
+    linear-gradient(180deg, rgba(255,220,140,0.10), rgba(0,0,0,0.35)),
+    linear-gradient(180deg, var(--copper-0), var(--copper-2));
+  color: var(--bg-0);
+  text-shadow: 0 1px 0 rgba(255,255,255,0.3);
+}
+
+.btn-success {
+  background: var(--color-success);
+  color: white;
+}
+
+.btn-danger {
+  background: var(--color-danger);
+  color: white;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--color-primary);
+  color: var(--color-primary);
+}
+
+.btn-lg {
+  padding: var(--space-md) var(--space-xl);
+  font-size: var(--font-lg);
+}
+
+.btn-sm {
+  padding: var(--space-xs) var(--space-md);
+  font-size: var(--font-sm);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ============================================
+   CARD STYLES - ВИКОРИСТОВУЙТЕ steampunk-cards.css
+   ============================================
+   
+   Стилі карт тепер в окремому файлі:
+   - css/steampunk-cards.css
+   
+   Класи карт:
+   - .sp-card (основна карта в стимпанк-стилі)
+   - .card-slot (порожній слот)
+   
+   Старі стилі .card залишені нижче для сумісності,
+   але рекомендується використовувати .sp-card
+   ============================================ */
+
+/* LEGACY: Старі стилі карт (deprecated, використовуйте .sp-card) */
+.card {
+  width: var(--card-width);
+  height: var(--card-height);
+  background:
+    radial-gradient(140px 120px at 30% 25%, rgba(255,220,140,0.16), transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.65)),
+    linear-gradient(180deg, #1b120c, #0b0806);
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(242,208,122,0.22);
+  position: relative;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.55), inset 0 0 18px rgba(0,0,0,0.75);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: calc(var(--radius-lg) - 6px);
+  border: 1px solid rgba(242,208,122,0.25);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.55);
+  pointer-events: none;
+}
+
+.card:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: var(--shadow-lg);
+}
+
+.card.selected {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 20px var(--color-primary);
+}
+
+.card.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.card-image {
+  width: 100%;
+  height: 60%;
+  object-fit: cover;
+}
+
+.card-content {
+  padding: var(--space-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.card-title {
+  font-size: var(--font-sm);
+  font-weight: bold;
+  color: var(--color-text);
+}
+
+.card-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--font-xs);
+  color: var(--color-text-secondary);
+}
+
+.card-element {
+  position: absolute;
+  top: var(--space-xs);
+  right: var(--space-xs);
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-xs);
+  font-weight: bold;
+  box-shadow: var(--shadow-sm);
+}
+
+.element-fire { background: var(--color-fire); }
+.element-water { background: var(--color-water); }
+.element-earth { background: var(--color-earth); }
+.element-air { background: var(--color-air); }
+.element-lightning { background: var(--color-lightning); }
+.element-ice { background: var(--color-ice); }
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal-backdrop);
+  animation: fadeIn var(--transition-base);
+}
+
+.modal {
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: var(--space-xl);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: var(--shadow-xl);
+  animation: slideUp var(--transition-base);
+  z-index: var(--z-modal);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+}
+
+.modal-title {
+  font-size: var(--font-xl);
+  font-weight: bold;
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  background: var(--color-bg-dark);
+  color: var(--color-text-secondary);
+  font-size: var(--font-xl);
+  transition: var(--transition-fast);
+}
+
+.modal-close:hover {
+  background: var(--color-danger);
+  color: white;
+}
+
+.modal-body {
+  margin-bottom: var(--space-lg);
+}
+
+.modal-footer {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: flex-end;
+}
+
+/* Toast */
+#toasts {
+  position: fixed;
+  top: var(--space-xl);
+  right: var(--space-xl);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.toast {
+  background: var(--color-surface);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 250px;
+  animation: slideInRight var(--transition-base);
+  border-left: 4px solid var(--color-primary);
+}
+
+.toast.success { border-left-color: var(--color-success); }
+.toast.error { border-left-color: var(--color-danger); }
+.toast.warning { border-left-color: var(--color-warning); }
+.toast.info { border-left-color: var(--color-info); }
+
+/* Tooltip */
+.tooltip {
+  position: absolute;
+  background: var(--color-bg-dark);
+  color: var(--color-text);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-sm);
+  white-space: nowrap;
+  z-index: var(--z-tooltip);
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+}
+
+/* Health Bar */
+.health-bar {
+  width: 100%;
+  height: 24px;
+  background: var(--color-bg-dark);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  position: relative;
+}
+
+.health-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-danger), var(--color-success));
+  transition: width var(--transition-slow);
+}
+
+.health-bar-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-sm);
+  font-weight: bold;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+
+  /* mobile: slightly smaller text */
+  @media (max-width: 420px) {
+    font-size: 0.75rem;
+  }
+
+/* XP Bar Styles (for card upgrades) */
+.xp-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  color: rgba(242, 208, 122, 0.9);
+  font-weight: 800;
+}
+
+.xp-label {
+  font-size: 0.9rem;
+}
+
+.xp-bar {
+  margin-top: 8px;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(242, 208, 122, 0.18);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.65);
+  overflow: hidden;
+}
+
+.xp-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(180deg, rgba(242, 208, 122, 0.95), rgba(122, 85, 32, 0.95));
+  box-shadow: 0 0 12px rgba(242, 208, 122, 0.25);
+  transition: width 0.3s ease;
+}
+
+.btn-upgrade {
+  margin-top: 12px;
+  width: 100%;
+  padding: 12px 10px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(242, 208, 122, 0.22);
+  color: rgba(244, 230, 198, 0.92);
+  font-weight: 900;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+
+.btn-upgrade:hover:not(:disabled) {
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 12px rgba(242, 208, 122, 0.25);
+  transform: translateY(-2px);
+}
+
+.btn-upgrade:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

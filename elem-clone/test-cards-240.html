@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Тест 240 карт - Фракції</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #1a120c;
+      color: #f4e6c6;
+    }
+    h1 {
+      color: #f2d07a;
+      text-align: center;
+    }
+    .stats {
+      background: #120d0a;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      border: 2px solid #c59b3c;
+    }
+    .stats h2 {
+      color: #d8905b;
+      margin-top: 0;
+    }
+    .faction {
+      background: #120d0a;
+      padding: 15px;
+      margin: 15px 0;
+      border-radius: 8px;
+      border-left: 4px solid #c59b3c;
+    }
+    .faction h3 {
+      color: #f2d07a;
+      margin-top: 0;
+    }
+    .card-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .card {
+      background: #1a120c;
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #7a5520;
+      transition: all 0.3s;
+    }
+    .card:hover {
+      border-color: #f2d07a;
+      transform: translateY(-2px);
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .card-name {
+      font-weight: bold;
+      color: #f4e6c6;
+      font-size: 14px;
+    }
+    .card-id {
+      color: #d0bf9a;
+      font-size: 11px;
+    }
+    .card-power {
+      color: #d8905b;
+      font-weight: bold;
+    }
+    .rarity {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+    }
+    .rarity.common { background: #555; color: #fff; }
+    .rarity.uncommon { background: #2ecc71; color: #fff; }
+    .rarity.rare { background: #3498db; color: #fff; }
+    .rarity.epic { background: #9b59b6; color: #fff; }
+    .rarity.legendary { background: #e67e22; color: #fff; }
+    .rarity.mythic { background: #e74c3c; color: #fff; }
+    .element {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: bold;
+      margin-left: 5px;
+    }
+    .element.fire { background: #e74c3c; color: #fff; }
+    .element.water { background: #3498db; color: #fff; }
+    .element.air { background: #95a5a6; color: #fff; }
+    .element.earth { background: #27ae60; color: #fff; }
+    .error {
+      background: #e74c3c;
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎴 Тест системи 240 карт - 40 фракцій</h1>
+  
+  <div class="stats">
+    <h2>📊 Статистика</h2>
+    <p><strong>Всього карт:</strong> <span id="total-cards">Завантаження...</span></p>
+    <p><strong>Фракцій:</strong> <span id="total-factions">Завантаження...</span></p>
+    <p><strong>По стихіях:</strong></p>
+    <ul>
+      <li>🔥 Вогонь: <span id="fire-count">0</span></li>
+      <li>💧 Вода: <span id="water-count">0</span></li>
+      <li>💨 Повітря: <span id="air-count">0</span></li>
+      <li>🌍 Земля: <span id="earth-count">0</span></li>
+    </ul>
+    <p><strong>По рідкості:</strong></p>
+    <ul>
+      <li>Звичайна: <span id="common-count">0</span></li>
+      <li>Незвичайна: <span id="uncommon-count">0</span></li>
+      <li>Рідкісна: <span id="rare-count">0</span></li>
+      <li>Епічна: <span id="epic-count">0</span></li>
+      <li>Легендарна: <span id="legendary-count">0</span></li>
+      <li>Міфічна: <span id="mythic-count">0</span></li>
+    </ul>
+  </div>
+
+  <div id="error-container"></div>
+  <div id="factions-container"></div>
+
+  <script type="module">
+    import { CARDS, getCardsByFaction, getCardsByElement, getCardsByRarity } from './js/data/cards.js';
+
+    // Перевірка завантаження
+    console.log('Завантажено карт:', CARDS?.length);
+    console.log('Приклад першої карти:', CARDS?.[0]);
+    console.log('Приклад останньої карти:', CARDS?.[CARDS.length - 1]);
+
+    // Оновлення статистики
+    document.getElementById('total-cards').textContent = CARDS?.length || 0;
+
+    // Підрахунок фракцій
+    const factions = [...new Set(CARDS.map(c => c.faction))];
+    document.getElementById('total-factions').textContent = factions.length;
+
+    // Підрахунок по стихіях
+    document.getElementById('fire-count').textContent = getCardsByElement('fire').length;
+    document.getElementById('water-count').textContent = getCardsByElement('water').length;
+    document.getElementById('air-count').textContent = getCardsByElement('air').length;
+    document.getElementById('earth-count').textContent = getCardsByElement('earth').length;
+
+    // Підрахунок по рідкості
+    document.getElementById('common-count').textContent = getCardsByRarity('common').length;
+    document.getElementById('uncommon-count').textContent = getCardsByRarity('uncommon').length;
+    document.getElementById('rare-count').textContent = getCardsByRarity('rare').length;
+    document.getElementById('epic-count').textContent = getCardsByRarity('epic').length;
+    document.getElementById('legendary-count').textContent = getCardsByRarity('legendary').length;
+    document.getElementById('mythic-count').textContent = getCardsByRarity('mythic').length;
+
+    // Відображення фракцій
+    const factionsContainer = document.getElementById('factions-container');
+
+    // Групування по стихіях для кращого відображення
+    const elementNames = {
+      fire: '🔥 Вогонь',
+      water: '💧 Вода',
+      air: '💨 Повітря',
+      earth: '🌍 Земля'
+    };
+
+    ['fire', 'water', 'air', 'earth'].forEach(element => {
+      const elementSection = document.createElement('div');
+      elementSection.innerHTML = `<h2>${elementNames[element]}</h2>`;
+      
+      const elementFactions = factions.filter(f => {
+        const cards = getCardsByFaction(f);
+        return cards.length > 0 && cards[0].element === element;
+      });
+
+      elementFactions.forEach(factionId => {
+        const factionCards = getCardsByFaction(factionId);
+        if (factionCards.length === 0) return;
+
+        const factionDiv = document.createElement('div');
+        factionDiv.className = 'faction';
+        
+        const factionName = factionCards[0].factionName;
+        factionDiv.innerHTML = `
+          <h3>${factionId}: ${factionName}</h3>
+          <div class="card-list"></div>
+        `;
+
+        const cardList = factionDiv.querySelector('.card-list');
+        
+        factionCards.forEach(card => {
+          const cardDiv = document.createElement('div');
+          cardDiv.className = 'card';
+          
+          const calculatedPower = Math.round(card.basePower * card.multiplier);
+          
+          cardDiv.innerHTML = `
+            <div class="card-header">
+              <span class="card-name">${card.name}</span>
+              <span class="card-power">${calculatedPower}</span>
+            </div>
+            <div class="card-id">${card.id}</div>
+            <div style="margin-top: 8px;">
+              <span class="rarity ${card.rarity}">${card.rarityDisplay}</span>
+              <span class="element ${card.element}">${elementNames[card.element]}</span>
+            </div>
+            <div style="margin-top: 5px; font-size: 11px; color: #d0bf9a;">
+              Base: ${card.basePower} × ${card.multiplier.toFixed(2)}
+            </div>
+          `;
+          
+          cardList.appendChild(cardDiv);
+        });
+
+        elementSection.appendChild(factionDiv);
+      });
+
+      factionsContainer.appendChild(elementSection);
+    });
+
+    // Перевірка на помилки
+    if (CARDS.length !== 240) {
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'error';
+      errorDiv.innerHTML = `
+        <strong>⚠️ ПОМИЛКА:</strong> Очікувалось 240 карт, але завантажено ${CARDS.length}
+      `;
+      document.getElementById('error-container').appendChild(errorDiv);
+    }
+
+    if (factions.length !== 40) {
+      const errorDiv = document.createElement('div');
+      errorDiv.className = 'error';
+      errorDiv.innerHTML = `
+        <strong>⚠️ ПОМИЛКА:</strong> Очікувалось 40 фракцій, але знайдено ${factions.length}
+      `;
+      document.getElementById('error-container').appendChild(errorDiv);
+    }
+
+  </script>
+</body>
+</html>

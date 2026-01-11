@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Debug - Card System</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #1a1a1a; color: #fff; }
+    .test { margin: 10px 0; padding: 10px; background: #2a2a2a; border-radius: 4px; }
+    .ok { color: #4caf50; }
+    .error { color: #f44336; }
+    button { padding: 10px 20px; margin: 10px 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Card System Diagnostics</h1>
+  <div id="results"></div>
+  
+  <h2>Actions:</h2>
+  <button onclick="testCreateUser()">Create Test User</button>
+  <button onclick="testLoadDeck()">Load Deck</button>
+  <button onclick="clearStorage()">Clear Storage</button>
+
+  <script src="js/data/cards.js"></script>
+  <script src="js/game/power.js"></script>
+  <script src="js/data/cards_index.js"></script>
+
+  <script>
+    const results = document.getElementById('results');
+    
+    function log(msg, isError = false) {
+      const div = document.createElement('div');
+      div.className = 'test ' + (isError ? 'error' : 'ok');
+      div.textContent = msg;
+      results.appendChild(div);
+    }
+    
+    // Test 1: Check scripts loaded
+    log('=== CHECKING SCRIPTS ===');
+    log('window.ALL_CARDS: ' + (window.ALL_CARDS ? `✓ (${window.ALL_CARDS.length} cards)` : '✗ NOT LOADED'), !window.ALL_CARDS);
+    log('window.getRandomCards: ' + (window.getRandomCards ? '✓' : '✗ NOT LOADED'), !window.getRandomCards);
+    log('window.getCardById: ' + (window.getCardById ? '✓' : '✗ NOT LOADED'), !window.getCardById);
+    log('window.getPower: ' + (window.getPower ? '✓' : '✗ NOT LOADED'), !window.getPower);
+    
+    // Test 2: Check localStorage
+    log('\n=== CHECKING LOCALSTORAGE ===');
+    const users = JSON.parse(localStorage.getItem('elem_users') || '{}');
+    const currentUser = JSON.parse(localStorage.getItem('elem_user_profile') || 'null');
+    log('Users in storage: ' + Object.keys(users).length);
+    log('Current user: ' + (currentUser ? currentUser.name : 'NONE'));
+    
+    if (currentUser) {
+      log('User has deckCards: ' + (currentUser.deckCards ? `✓ (${currentUser.deckCards.length})` : '✗ NO DECK'), !currentUser.deckCards);
+      log('User has collectionCards: ' + (currentUser.collectionCards ? `✓ (${currentUser.collectionCards.length})` : '✗ NO COLLECTION'), !currentUser.collectionCards);
+      
+      if (currentUser.deckCards && currentUser.deckCards.length > 0) {
+        log('\n=== DECK CARDS ===');
+        currentUser.deckCards.forEach((dc, i) => {
+          const card = window.getCardById(dc.id);
+          if (card) {
+            const power = window.getPower(card, dc.level);
+            log(`${i+1}. ${card.name} (${card.element}) - Level ${dc.level} - Power ${power}`);
+          } else {
+            log(`${i+1}. Card ${dc.id} NOT FOUND`, true);
+          }
+        });
+      }
+    }
+    
+    function testCreateUser() {
+      const username = 'test_' + Date.now();
+      log('\n=== CREATING TEST USER: ' + username + ' ===');
+      
+      if (!window.getRandomCards) {
+        log('ERROR: getRandomCards not available', true);
+        return;
+      }
+      
+      const selectedCards = window.getRandomCards(16);
+      log('Selected ' + selectedCards.length + ' cards');
+      
+      const deckCards = selectedCards.slice(0, 9).map(card => ({
+        id: card.id,
+        level: 1
+      }));
+      const collectionCards = selectedCards.slice(9, 16).map(card => ({
+        id: card.id,
+        level: 1
+      }));
+      
+      const profile = {
+        name: username,
+        level: 1,
+        xp: 0,
+        gold: 10,
+        gems: 1500,
+        wins: 0,
+        losses: 0,
+        gamesPlayed: 0,
+        createdAt: Date.now(),
+        deckCards: deckCards,
+        collectionCards: collectionCards
+      };
+      
+      const users = JSON.parse(localStorage.getItem('elem_users') || '{}');
+      users[username] = profile;
+      localStorage.setItem('elem_users', JSON.stringify(users));
+      localStorage.setItem('elem_user_profile', JSON.stringify(profile));
+      
+      log('✓ User created with ' + deckCards.length + ' deck cards and ' + collectionCards.length + ' collection cards');
+      log('✓ User saved to localStorage');
+      
+      setTimeout(() => location.reload(), 1000);
+    }
+    
+    function testLoadDeck() {
+      results.innerHTML = '';
+      log('=== LOADING DECK ===');
+      
+      const profile = JSON.parse(localStorage.getItem('elem_user_profile') || 'null');
+      if (!profile) {
+        log('ERROR: No user logged in', true);
+        return;
+      }
+      
+      if (!profile.deckCards) {
+        log('ERROR: User has no deckCards', true);
+        return;
+      }
+      
+      log('Loading ' + profile.deckCards.length + ' cards...');
+      
+      profile.deckCards.forEach((dc, i) => {
+        const card = window.getCardById(dc.id);
+        if (card) {
+          const power = window.getPower(card, dc.level);
+          log(`✓ ${i+1}. ${card.name} - ${card.element} - L${dc.level} - P${power}`);
+        } else {
+          log(`✗ ${i+1}. Card ${dc.id} NOT FOUND`, true);
+        }
+      });
+    }
+    
+    function clearStorage() {
+      if (confirm('Clear all localStorage data?')) {
+        localStorage.clear();
+        log('✓ Storage cleared');
+        setTimeout(() => location.reload(), 1000);
+      }
+    }
+  </script>
+</body>
+</html>

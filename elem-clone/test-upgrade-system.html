@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Тест XP системи</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            padding: 20px;
+        }
+        .test {
+            background: #2a2a2a;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 3px solid #f2d07a;
+        }
+        .pass {
+            color: #90EE90;
+        }
+        .fail {
+            color: #FF6B6B;
+        }
+    </style>
+</head>
+<body>
+    <h1>Тест XP системи</h1>
+    <div id="results"></div>
+
+    <script src="js/data/cards.js"></script>
+    <script src="js/game/power.js"></script>
+    <script src="js/data/cards_index.js"></script>
+
+    <script>
+        const results = document.getElementById('results');
+
+        function test(name, fn) {
+            try {
+                fn();
+                results.innerHTML += `<div class="test"><span class="pass">✓</span> ${name}</div>`;
+            } catch (e) {
+                results.innerHTML += `<div class="test"><span class="fail">✗</span> ${name}: ${e.message}</div>`;
+            }
+        }
+
+        // Test 1: XP functions exist
+        test('xpNeed функція існує', () => {
+            if (typeof window.xpNeed !== 'function') throw new Error('xpNeed not found');
+            const need = window.xpNeed(1);
+            if (need !== 20) throw new Error(`Expected 20, got ${need}`);
+        });
+
+        // Test 2: xpValue function
+        test('xpValue функція існує', () => {
+            if (typeof window.xpValue !== 'function') throw new Error('xpValue not found');
+            const val = window.xpValue(1);
+            if (val !== 5) throw new Error(`Expected 5, got ${val}`);
+        });
+
+        // Test 3: getProgress function
+        test('getProgress функція існує', () => {
+            if (typeof window.getProgress !== 'function') throw new Error('getProgress not found');
+            const state = {};
+            const prog = window.getProgress(state, 'test-card');
+            if (prog.level !== 1 || prog.xp !== 0) throw new Error('Invalid initial state');
+        });
+
+        // Test 4: addXp function
+        test('addXp функція існує і працює', () => {
+            if (typeof window.addXp !== 'function') throw new Error('addXp not found');
+            const state = {};
+            window.getProgress(state, 'test-card');
+            window.addXp(state, 'test-card', 20);
+            if (state.progress['test-card'].level !== 2) throw new Error('Level should be 2 after 20 XP');
+        });
+
+        // Test 5: renderUpgradeBar function
+        test('renderUpgradeBar функція існує', () => {
+            if (typeof window.renderUpgradeBar !== 'function') throw new Error('renderUpgradeBar not found');
+        });
+
+        // Test 6: updateUpgradeButton function
+        test('updateUpgradeButton функція існує', () => {
+            if (typeof window.updateUpgradeButton !== 'function') throw new Error('updateUpgradeButton not found');
+        });
+
+        // Test 7: ALL_CARDS loaded
+        test('ALL_CARDS завантажено', () => {
+            if (!window.ALL_CARDS || window.ALL_CARDS.length === 0) throw new Error('ALL_CARDS not loaded');
+            results.innerHTML += `<div style="color: #999; margin-top: 5px;">  Карт завантажено: ${window.ALL_CARDS.length}</div>`;
+        });
+
+        // Test 8: getCardById function
+        test('getCardById функція існує', () => {
+            if (typeof window.getCardById !== 'function') throw new Error('getCardById not found');
+            const card = window.getCardById(window.ALL_CARDS[0].id);
+            if (!card) throw new Error('Could not get first card');
+        });
+
+        results.innerHTML += '<h2 style="margin-top: 30px;">XP Прогресія</h2>';
+        for (let l = 1; l <= 5; l++) {
+            const need = window.xpNeed(l);
+            const val = window.xpValue(l);
+            results.innerHTML += `<div class="test">Level ${l}: потрібно ${need} XP, спалення дає ${val} XP</div>`;
+        }
+    </script>
+</body>
+</html>

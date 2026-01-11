@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elem Clone - Rules Test</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #1a1a2e;
+      color: #fff;
+    }
+    .test {
+      margin: 20px 0;
+      padding: 15px;
+      background: #16213e;
+      border-radius: 8px;
+      border-left: 4px solid #4CAF50;
+    }
+    .test.failed {
+      border-left-color: #F44336;
+    }
+    .test h3 {
+      margin: 0 0 10px 0;
+    }
+    .result {
+      margin-top: 10px;
+      padding: 10px;
+      background: #0f0f1e;
+      border-radius: 4px;
+    }
+    button {
+      padding: 10px 20px;
+      background: #4A90E2;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+    button:hover {
+      background: #357ABD;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 Elem Clone - Rules Test Suite</h1>
+  <p>Тести для перевірки ігрової логіки</p>
+  
+  <button onclick="runAllTests()">▶️ Запустити всі тести</button>
+  
+  <div id="results"></div>
+
+  <script type="module">
+    import { calculateDamage, resolveRound, checkDuelEnd, validateDeck } from '../js/game/rules.js';
+    import { ELEMENTS } from '../js/data/elements.js';
+
+    window.runAllTests = () => {
+      const results = document.getElementById('results');
+      results.innerHTML = '';
+
+      // Test 1: Damage calculation - effective attack
+      test('Damage Calculation - Effective Attack', () => {
+        const attacker = { name: 'Fire Dragon', attack: 45, defense: 30, element: ELEMENTS.FIRE };
+        const defender = { name: 'Ice Golem', attack: 35, defense: 45, element: ELEMENTS.ICE };
+        
+        const result = calculateDamage(attacker, defender);
+        
+        assert(result.damage > 0, 'Damage should be greater than 0');
+        assert(result.multiplier === 1.5, 'Fire should be effective against Ice (1.5x)');
+        assert(result.isEffective === true, 'Attack should be marked as effective');
+        
+        return `Damage: ${result.damage}, Multiplier: ${result.multiplier}`;
+      });
+
+      // Test 2: Damage calculation - weak attack
+      test('Damage Calculation - Weak Attack', () => {
+        const attacker = { name: 'Fire Dragon', attack: 45, defense: 30, element: ELEMENTS.FIRE };
+        const defender = { name: 'Water Spirit', attack: 35, defense: 40, element: ELEMENTS.WATER };
+        
+        const result = calculateDamage(attacker, defender);
+        
+        assert(result.multiplier === 0.5, 'Fire should be weak against Water (0.5x)');
+        assert(result.isWeak === true, 'Attack should be marked as weak');
+        
+        return `Damage: ${result.damage}, Multiplier: ${result.multiplier}`;
+      });
+
+      // Test 3: Round resolution
+      test('Round Resolution', () => {
+        const playerCard = { id: 'p1', name: 'Thunder', attack: 50, defense: 25, element: ELEMENTS.LIGHTNING };
+        const enemyCard = { id: 'e1', name: 'Air Spirit', attack: 38, defense: 28, element: ELEMENTS.AIR };
+        
+        const result = resolveRound(playerCard, enemyCard);
+        
+        assert(result.winner !== null, 'There should be a winner');
+        assert(result.playerAttack !== undefined, 'Player attack should be calculated');
+        assert(result.enemyAttack !== undefined, 'Enemy attack should be calculated');
+        
+        return `Winner: ${result.winner}, Net Damage: ${result.netDamage}`;
+      });
+
+      // Test 4: Duel end check - victory
+      test('Duel End Check - Victory', () => {
+        const result = checkDuelEnd(50, 0);
+        
+        assert(result.ended === true, 'Duel should be ended');
+        assert(result.result === 'victory', 'Result should be victory');
+        
+        return `Ended: ${result.ended}, Result: ${result.result}`;
+      });
+
+      // Test 5: Duel end check - defeat
+      test('Duel End Check - Defeat', () => {
+        const result = checkDuelEnd(0, 50);
+        
+        assert(result.ended === true, 'Duel should be ended');
+        assert(result.result === 'defeat', 'Result should be defeat');
+        
+        return `Ended: ${result.ended}, Result: ${result.result}`;
+      });
+
+      // Test 6: Duel end check - ongoing
+      test('Duel End Check - Ongoing', () => {
+        const result = checkDuelEnd(50, 50);
+        
+        assert(result.ended === false, 'Duel should not be ended');
+        
+        return `Ended: ${result.ended}`;
+      });
+
+      // Test 7: Deck validation - valid
+      test('Deck Validation - Valid Deck', () => {
+        const deck = Array(9).fill(null).map((_, i) => ({
+          id: `card_${i}`,
+          name: `Card ${i}`,
+          attack: 40,
+          defense: 30,
+          element: ELEMENTS.FIRE
+        }));
+        
+        const result = validateDeck(deck);
+        
+        assert(result.valid === true, 'Deck should be valid');
+        assert(result.error === null, 'There should be no error');
+        
+        return `Valid: ${result.valid}`;
+      });
+
+      // Test 8: Deck validation - invalid (wrong count)
+      test('Deck Validation - Invalid Count', () => {
+        const deck = Array(5).fill(null).map((_, i) => ({
+          id: `card_${i}`,
+          name: `Card ${i}`,
+          attack: 40,
+          defense: 30,
+          element: ELEMENTS.FIRE
+        }));
+        
+        const result = validateDeck(deck);
+        
+        assert(result.valid === false, 'Deck should be invalid');
+        assert(result.error !== null, 'There should be an error message');
+        
+        return `Valid: ${result.valid}, Error: ${result.error}`;
+      });
+
+      // Test 9: Element effectiveness chain
+      test('Element Effectiveness Chain', () => {
+        const tests = [
+          { attacker: ELEMENTS.FIRE, defender: ELEMENTS.ICE, expected: 1.5 },
+          { attacker: ELEMENTS.ICE, defender: ELEMENTS.LIGHTNING, expected: 1.5 },
+          { attacker: ELEMENTS.LIGHTNING, defender: ELEMENTS.AIR, expected: 1.5 },
+          { attacker: ELEMENTS.AIR, defender: ELEMENTS.EARTH, expected: 1.5 },
+          { attacker: ELEMENTS.EARTH, defender: ELEMENTS.WATER, expected: 1.5 },
+          { attacker: ELEMENTS.WATER, defender: ELEMENTS.FIRE, expected: 1.5 }
+        ];
+        
+        for (const t of tests) {
+          const card1 = { attack: 40, defense: 30, element: t.attacker };
+          const card2 = { attack: 40, defense: 30, element: t.defender };
+          const result = calculateDamage(card1, card2);
+          
+          assert(result.multiplier === t.expected, 
+            `${t.attacker} vs ${t.defender} should be ${t.expected}x`);
+        }
+        
+        return 'All element chains validated ✓';
+      });
+
+      console.log('✅ All tests completed!');
+    };
+
+    // Test helper functions
+    function test(name, fn) {
+      const testEl = document.createElement('div');
+      testEl.className = 'test';
+      
+      const title = document.createElement('h3');
+      title.textContent = `Test: ${name}`;
+      testEl.appendChild(title);
+      
+      const resultEl = document.createElement('div');
+      resultEl.className = 'result';
+      
+      try {
+        const result = fn();
+        resultEl.innerHTML = `✅ <strong>PASSED</strong><br>${result}`;
+        console.log(`✅ ${name} - PASSED`);
+      } catch (error) {
+        testEl.classList.add('failed');
+        resultEl.innerHTML = `❌ <strong>FAILED</strong><br>${error.message}`;
+        console.error(`❌ ${name} - FAILED:`, error);
+      }
+      
+      testEl.appendChild(resultEl);
+      document.getElementById('results').appendChild(testEl);
+    }
+
+    function assert(condition, message) {
+      if (!condition) {
+        throw new Error(message || 'Assertion failed');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Card System Test</title>
+</head>
+<body>
+  <h1>Card System Test</h1>
+  <div id="results"></div>
+
+  <script src="js/data/cards.js"></script>
+  <script src="js/game/power.js"></script>
+  <script src="js/data/cards_index.js"></script>
+
+  <script>
+    const results = document.getElementById('results');
+    
+    try {
+      // Test 1: Check if card data loaded
+      const html = ['<h2>Tests Results:</h2>'];
+      
+      if (window.ALL_CARDS) {
+        html.push(`<p>✓ ALL_CARDS loaded: ${window.ALL_CARDS.length} cards</p>`);
+      } else {
+        html.push(`<p>✗ ALL_CARDS not loaded</p>`);
+      }
+      
+      if (window.getRandomCards) {
+        html.push(`<p>✓ getRandomCards function available</p>`);
+        const random = getRandomCards(5);
+        html.push(`<p>✓ getRandomCards(5) returned: ${random.length} cards</p>`);
+        html.push(`<p>Cards: ${random.map(c => c.name).join(', ')}</p>`);
+      } else {
+        html.push(`<p>✗ getRandomCards function not available</p>`);
+      }
+      
+      if (window.getCardById) {
+        html.push(`<p>✓ getCardById function available</p>`);
+        const card = getCardById("C-F-001");
+        if (card) {
+          html.push(`<p>✓ Found card: ${card.name}, Power: ${getPower(card, 1)}</p>`);
+        }
+      } else {
+        html.push(`<p>✗ getCardById function not available</p>`);
+      }
+      
+      if (window.getPower) {
+        html.push(`<p>✓ getPower function available</p>`);
+        const card = ALL_CARDS[0];
+        html.push(`<p>✓ ${card.name} Power at Level 1: ${getPower(card, 1)}</p>`);
+        html.push(`<p>✓ ${card.name} Power at Level 5: ${getPower(card, 5)}</p>`);
+      } else {
+        html.push(`<p>✗ getPower function not available</p>`);
+      }
+      
+      results.innerHTML = html.join('');
+    } catch (error) {
+      results.innerHTML = `<p style="color: red;">Error: ${error.message}</p><pre>${error.stack}</pre>`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+# Node
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# VSCode
+.vscode/
+
+# Mac
+Icon?
+
+# Windows
+*.lnk
+
+# Env
+.env
+.env.*
+
+# Build
+/dist/
+/build/
+
+# Misc
+*.swp
+*.swo
+*.bak
+*.tmp
+
+# Coverage
+coverage/
+
+# Other
+.idea/
+*.iml
+*.sublime-workspace
+*.sublime-project

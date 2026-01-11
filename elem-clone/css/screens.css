@@ -1,0 +1,558 @@
+/* Screen-specific styles */
+
+/* Tiles grid */
+.tiles {
+  margin-top: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.tile {
+  position: relative;
+  border-radius: var(--tile-radius);
+  padding: 10px 10px 12px;
+  min-height: 96px;
+  background:
+    radial-gradient(140px 120px at 30% 25%, rgba(255,220,140,0.16), transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.65)),
+    linear-gradient(180deg, #1b120c, #0b0806);
+  border: 1px solid rgba(242,208,122,0.22);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.55), inset 0 0 18px rgba(0,0,0,0.75);
+  cursor: pointer;
+  user-select: none;
+  transition: transform .08s ease, filter .08s ease;
+}
+
+.tile:hover {
+  filter: brightness(1.05);
+}
+
+.tile:active {
+  transform: translateY(1px);
+}
+
+.tile::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: calc(var(--tile-radius) - 8px);
+  border: 1px solid rgba(242,208,122,0.25);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.55);
+  pointer-events: none;
+}
+
+.tile .rivets {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.rivet {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255,255,255,0.25), transparent 45%),
+    linear-gradient(180deg, #d1b066, #7a5520);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(0,0,0,0.45);
+  opacity: 0.9;
+}
+
+.r1 { top: 8px; left: 10px; }
+.r2 { top: 8px; right: 10px; }
+.r3 { bottom: 10px; left: 10px; }
+.r4 { bottom: 10px; right: 10px; }
+
+.tile .label {
+  font-size: 13px;
+  color: var(--brass-0);
+  text-shadow: 0 1px 0 rgba(0,0,0,0.7);
+}
+
+.tile .sub {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  opacity: 0.95;
+}
+
+.tile .icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255,230,170,0.18), transparent 60%),
+    linear-gradient(180deg, #2f1f14, #120c08);
+  border: 1px solid rgba(242,208,122,0.25);
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.6);
+  position: relative;
+  overflow: hidden;
+}
+
+.tile .icon::after {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background:
+    repeating-conic-gradient(from 0deg,
+      rgba(242,208,122,0.12) 0 10deg,
+      rgba(0,0,0,0.0) 10deg 20deg);
+  opacity: 0.55;
+  transform: rotate(10deg);
+}
+
+/* Lobby Screen */
+.lobby-screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+/* Accordion list */
+.list {
+  margin-top: 12px;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid rgba(242,208,122,0.18);
+  box-shadow: 0 12px 22px rgba(0,0,0,0.55);
+  background:
+    linear-gradient(180deg, rgba(255,220,140,0.06), rgba(0,0,0,0.45)),
+    linear-gradient(180deg, #1b120c, #0b0806);
+}
+
+.item {
+  border-top: 1px solid rgba(242,208,122,0.10);
+}
+
+.item:first-child {
+  border-top: none;
+}
+
+.item > button {
+  all: unset;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 12px 12px;
+  cursor: pointer;
+  gap: 10px;
+}
+
+.item > button:hover {
+  background: rgba(255,210,120,0.05);
+}
+
+.item .bullet {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background: linear-gradient(180deg, var(--brass-0), var(--brass-2));
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.5), 0 0 10px rgba(255,210,120,0.18);
+  position: relative;
+}
+
+.item .bullet::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 6px;
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255,255,255,0.22), transparent 55%),
+    linear-gradient(180deg, #3a2e1f, #14100c);
+  opacity: 0.9;
+}
+
+.item .text {
+  flex: 1;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+
+.item .chev {
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid rgba(242,208,122,0.7);
+  border-bottom: 2px solid rgba(242,208,122,0.7);
+  transform: rotate(-45deg);
+  transition: transform .12s ease;
+  opacity: 0.9;
+  margin-right: 4px;
+}
+
+.item[aria-expanded="true"] .chev {
+  transform: rotate(45deg);
+}
+
+.panel-inner {
+  display: none;
+  padding: 0 12px 12px 44px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.item[aria-expanded="true"] .panel-inner {
+  display: block;
+}
+
+/* Promo */
+.promo {
+  margin-top: 10px;
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  background:
+    radial-gradient(400px 200px at 50% 0%, rgba(255,210,120,0.12), transparent 55%),
+    linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.65)),
+    linear-gradient(180deg, #1b120c, #0b0806);
+  border: 1px solid rgba(242,208,122,0.22);
+  box-shadow: 0 12px 22px rgba(0,0,0,0.55);
+  text-align: center;
+}
+
+.promo .badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--copper-0), var(--copper-2));
+  border: 1px solid rgba(255,220,140,0.25);
+  color: #1c0f08;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.45);
+  margin-bottom: 6px;
+}
+
+.promo .line {
+  color: var(--brass-0);
+  font-weight: 700;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.75);
+}
+
+.promo .sub {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.lobby-title {
+  font-size: var(--font-3xl);
+  font-weight: bold;
+  background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.lobby-subtitle {
+  font-size: var(--font-lg);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-md);
+}
+
+.lobby-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  width: 100%;
+  max-width: 400px;
+}
+
+.lobby-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  margin-top: var(--space-xl);
+}
+
+.stat-card {
+  background: var(--color-surface);
+  padding: var(--space-lg);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
+.stat-value {
+  font-size: var(--font-2xl);
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.stat-label {
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-xs);
+}
+
+/* Deck Screen */
+.deck-screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.deck-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.deck-title {
+  font-size: var(--font-2xl);
+  font-weight: bold;
+}
+
+.deck-info {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+  color: var(--color-text-secondary);
+}
+
+.deck-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);
+  justify-items: center;
+}
+
+.deck-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  margin-top: var(--space-xl);
+}
+
+.deck-slot {
+  width: var(--card-width);
+  height: var(--card-height);
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-disabled);
+  font-size: var(--font-sm);
+  text-align: center;
+  padding: var(--space-sm);
+}
+
+/* Duel Screen */
+.duel-screen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  height: 100%;
+}
+
+.duel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-lg);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.player-name {
+  font-size: var(--font-lg);
+  font-weight: bold;
+}
+
+.player-hp {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.duel-round {
+  text-align: center;
+  font-size: var(--font-xl);
+  font-weight: bold;
+  color: var(--color-primary);
+}
+
+.duel-arena {
+  flex: 1;
+  display: flex;
+  gap: var(--space-2xl);
+  align-items: center;
+  justify-content: center;
+}
+
+.duel-deck {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-md);
+}
+
+.duel-vs {
+  font-size: var(--font-3xl);
+  font-weight: bold;
+  color: var(--color-text-secondary);
+}
+
+.duel-actions {
+  display: flex;
+  gap: var(--space-md);
+  justify-content: center;
+  padding: var(--space-lg);
+}
+
+.duel-log {
+  background: var(--color-surface);
+  padding: var(--space-md);
+  border-radius: var(--radius-md);
+  max-height: 150px;
+  overflow-y: auto;
+  font-size: var(--font-sm);
+  color: var(--color-text-secondary);
+}
+
+.duel-log-entry {
+  padding: var(--space-xs) 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.duel-log-entry:last-child {
+  border-bottom: none;
+}
+
+/* Result Screen */
+.result-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xl);
+  text-align: center;
+}
+
+.result-icon {
+  font-size: 120px;
+  animation: scaleIn 0.5s ease;
+}
+
+.result-title {
+  font-size: var(--font-3xl);
+  font-weight: bold;
+}
+
+.result-title.victory {
+  color: var(--color-success);
+}
+
+.result-title.defeat {
+  color: var(--color-danger);
+}
+
+.result-stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-lg);
+  width: 100%;
+  max-width: 500px;
+}
+
+.result-actions {
+  display: flex;
+  gap: var(--space-md);
+  margin-top: var(--space-xl);
+}
+
+/* Animations */
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .duel-arena {
+    flex-direction: column;
+    gap: var(--space-lg);
+  }
+  
+  .deck-grid,
+  .duel-deck {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-sm);
+  }
+  
+  .lobby-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .result-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* FORCE 3 COLUMNS ON KEY GRIDS (desktop & mobile) */
+.collection-grid,
+.deck-grid,
+.duel-deck,
+.weaker-grid {
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 10px;
+}
+
+/* Ensure grid items don't overflow and will size their children */
+.collection-grid > *,
+.deck-grid > *,
+.duel-deck > *,
+.weaker-grid > * {
+  width: 100%;
+}
+
+/* Mobile tweaks for smaller devices */
+@media (max-width: 420px) {
+  .duel-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-sm);
+    padding: calc(var(--space-md) / 2);
+  }
+
+  .player-name, .duel-round, .player-hp .health-bar-text {
+    font-size: 0.9rem;
+  }
+
+  .duel-arena {
+    padding: var(--space-sm);
+  }
+
+  .duel-deck {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .duel-vs {
+    font-size: 1.6rem;
+  }
+
+  .duel-actions {
+    flex-direction: column;
+    gap: var(--space-sm);
+    padding: var(--space-sm);
+  }
+
+  .duel-log {
+    max-height: 100px;
+    font-size: 0.85rem;
+  }
+}
