@@ -962,3 +962,77 @@
   transform: scale(0.95);
   transition: transform 0.1s ease;
 }
+
+/* ===== OVERRIDES FOR DECK LOOK (match screenshot) ===== */
+:root {
+  --R1: var(--common);
+  --R2: #9fd97a;
+  --R3: var(--rare);
+  --R4: var(--epic);
+  --R5: var(--legend);
+  --R6: #ff6b9d;
+}
+
+.deck-grid { justify-items: center; align-items: start; }
+
+/* Thin colored frame and cleaner compact card for mobile deck */
+.deck-grid .sp-card {
+  border: 2px solid transparent;
+  box-sizing: border-box;
+  padding: 6px !important;
+  border-radius: 8px !important;
+  background-clip: padding-box;
+}
+
+/* Rarity borders */
+.deck-grid .sp-card.R1 { border-color: var(--R1); }
+.deck-grid .sp-card.R2 { border-color: var(--R2); }
+.deck-grid .sp-card.R3 { border-color: var(--R3); }
+.deck-grid .sp-card.R4 { border-color: var(--R4); }
+.deck-grid .sp-card.R5 { border-color: var(--R5); }
+.deck-grid .sp-card.R6 { border-color: var(--R6); }
+
+/* Rarity badge: small square on top-left */
+.deck-grid .sp-card .rarity-badge {
+  top: 8px;
+  left: 8px;
+  right: auto;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  color: #fff !important;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--rar) 60%, #000 20%), color-mix(in srgb, var(--rar) 40%, #000 50%));
+  border: 0;
+  box-shadow: 0 2px 6px rgba(0,0,0,.6);
+}
+
+/* Element icon: small colored square top-right */
+.deck-grid .sp-card .element-icon {
+  top: 8px !important;
+  right: 8px !important;
+  left: auto !important;
+  width: 34px !important;
+  height: 34px !important;
+  border-radius: 6px;
+  background: rgba(0,0,0,0.18);
+  border: 2px solid color-mix(in srgb, var(--elem) 65%, #000 35%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--elem) !important;
+}
+
+/* Power reduced for deck view */
+.deck-grid .sp-card .power-value {
+  font-size: 22px !important;
+  padding: 2px 8px !important;
+  min-width: auto !important;
+  bottom: 8px !important;
+}
+
+/* Make sure cards are compact and centered in grid */
+@media (max-width: 480px) {
+  .deck-grid { gap: 6px; }
+  .deck-grid .sp-card { aspect-ratio: 1 / 1.35; width: 86%; }
+}
+

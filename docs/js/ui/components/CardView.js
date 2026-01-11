@@ -19,6 +19,7 @@ export const createCardView = (card, options = {}) => {
   }
 
   const classes = ['sp-card', card.element];
+  if (card.rarity) classes.push(card.rarity);
   if (selected) classes.push('selected');
   if (disabled) classes.push('disabled');
 
@@ -33,9 +34,16 @@ export const createCardView = (card, options = {}) => {
 
   // Only element icon (SVG) and power
   const elementIcon = ELEMENT_ICONS[card.element] || ELEMENT_ICONS.fire;
-  const iconWrap = dom.create('div', { style: { position: 'absolute', top: '12px', left: '12px', width: '38px', height: '38px' } });
-  iconWrap.innerHTML = `<svg viewBox="0 0 24 24" width="38" height="38" fill="none">${elementIcon}</svg>`;
+  const iconWrap = dom.create('div', { className: 'element-icon', style: { position: 'absolute', top: '8px', right: '8px', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px' } });
+  iconWrap.innerHTML = `<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">${elementIcon}</svg>`;
   cardEl.appendChild(iconWrap);
+
+  // Rarity badge (small colored rectangle with rarity text)
+  if (card.rarityDisplay || card.rarity) {
+    const rarityText = card.rarityDisplay || card.rarity || '';
+    const rarityBadge = dom.create('div', { className: 'rarity-badge' }, [String(rarityText)]);
+    cardEl.appendChild(rarityBadge);
+  }
 
   // Power (attack or basePower)
   const power = card.attack || card.basePower || 0;
