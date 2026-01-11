@@ -1,3 +1,70 @@
+/* ===============================
+   MOBILE COMPACT CARD MODE
+   =============================== */
+@media (max-width: 480px) {
+
+  .sp-card {
+    /* Розмір */
+    width: 100%;
+    max-width: none;
+    aspect-ratio: 1 / 1.35;
+    height: auto;
+
+    /* Спрощення вигляду */
+    padding: 6px;
+    border-radius: 10px;
+
+    box-shadow:
+      0 4px 10px rgba(0,0,0,.6),
+      inset 0 0 8px rgba(0,0,0,.7);
+  }
+
+  /* Прибираємо важкі рамки */
+  .sp-card::before,
+  .sp-card::after {
+    display: none;
+  }
+
+  /* Зменшуємо декор */
+  .corner-gear {
+    transform: scale(0.55);
+    top: 6px;
+    left: 6px;
+  }
+
+  .rarity-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+    top: 6px;
+    right: 6px;
+  }
+
+  .element-emoji,
+  .element-icon {
+    font-size: 18px;
+    width: 24px;
+    height: 24px;
+  }
+
+  /* Стати компактні */
+  .stats-plate {
+    top: 42%;
+    padding: 4px 6px;
+  }
+
+  .stat-value {
+    font-size: 11px;
+  }
+
+  .power-plate {
+    height: 36px;
+    bottom: 8px;
+  }
+
+  .power-value {
+    font-size: 14px;
+  }
+}
 /* 🎴 СТИМПАНК СТИЛЬ КАРТ - ДЕТАЛЬНИЙ ДИЗАЙН */
 
 :root {
@@ -68,8 +135,13 @@
     border-radius: 12px;
     padding: 8px;
     max-width: none;
+    /* width/height не задаємо! */
   }
-  .element-emoji { font-size: 22px; }
+  .sp-card::before { inset: 8px; }
+  .sp-card::after  { inset: 14px; }
+  .corner-gear { transform: scale(0.85); transform-origin: top left; }
+  .element-emoji { font-size: 20px; }
+  .rarity-badge { padding: 4px 10px; font-size: 10px; }
   .power-plate .power-value { font-size: 0.9rem; }
 
 /* Металева рамка з текстурою */

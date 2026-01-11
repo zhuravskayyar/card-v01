@@ -1,4 +1,96 @@
 @media (max-width: 480px) {
+  .deck-grid,
+  .collection-grid,
+  .duel-deck {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .deck-grid > *,
+  .collection-grid > *,
+  .duel-deck > * {
+    min-width: 0;
+  }
+}
+@media (max-width: 480px) {
+  .deck-grid,
+  .collection-grid,
+  .duel-deck {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .deck-grid > *,
+  .collection-grid > *,
+  .duel-deck > * {
+    min-width: 0;
+  }
+  .card {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 3;
+  }
+}
+@media (max-width: 480px) {
+  .deck-grid,
+  .duel-deck,
+  .collection-grid,
+  .weaker-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  .deck-grid > *,
+  .duel-deck > *,
+  .collection-grid > *,
+  .weaker-grid > * {
+    min-width: 0;
+  }
+}
+@media (max-width: 480px) {
+  .deck-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+}
+@media (max-width: 480px) {
+  .collection-grid,
+  .deck-grid,
+  .duel-deck,
+  .weaker-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    justify-items: stretch !important;
+    align-items: start !important;
+  }
+}
+/* ===== Mobile card rendering mode ===== */
+@media (max-width: 480px) {
+  .collection-grid,
+  .deck-grid,
+  .duel-deck,
+  .weaker-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+    justify-items: stretch !important;
+    align-items: start !important;
+  }
+
+  .sp-card {
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    aspect-ratio: 2 / 3;
+    border-radius: 12px;
+    padding: 8px;
+    min-width: 0;
+  }
+
+  .sp-card::before { inset: 8px; }
+  .sp-card::after  { inset: 14px; }
+  .corner-gear { transform: scale(0.85); transform-origin: top left; }
+  .element-emoji { font-size: 20px; }
+  .rarity-badge { padding: 4px 10px; font-size: 10px; }
+}
+@media (max-width: 480px) {
   .collection-grid,
   .deck-grid,
   .duel-deck,
