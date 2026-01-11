@@ -5,144 +5,424 @@
 
   .sp-card {
     /* Розмір */
-    width: 100%;
-    max-width: none;
-    aspect-ratio: 1 / 1.35;
-    height: auto;
+    /* 🎴 СТИМПАНК СТИЛЬ КАРТ - МОБІЛЬНА ОПТИМІЗАЦІЯ */
 
-    /* Спрощення вигляду */
-    padding: 6px;
-    border-radius: 10px;
-
-    box-shadow:
-      0 4px 10px rgba(0,0,0,.6),
-      inset 0 0 8px rgba(0,0,0,.7);
-  }
-
-  /* Прибираємо важкі рамки */
-  .sp-card::before,
-  .sp-card::after {
-    display: none;
-  }
-
-  /* Зменшуємо декор */
-  .corner-gear {
-    transform: scale(0.55);
-    top: 6px;
-    left: 6px;
-  }
-
-  .rarity-badge {
-    font-size: 9px;
-    padding: 2px 6px;
-    top: 6px;
-    right: 6px;
-  }
-
-  .element-emoji,
-  .element-icon {
-    font-size: 18px;
-    width: 24px;
-    height: 24px;
-  }
-
-  /* Стати компактні */
-  .stats-plate {
-    top: 42%;
-    padding: 4px 6px;
-  }
-
-  .stat-value {
-    font-size: 11px;
-  }
-
-  .power-plate {
-    height: 36px;
-    bottom: 8px;
-  }
-
-  .power-value {
-    font-size: 14px;
-  }
-}
-/* 🎴 СТИМПАНК СТИЛЬ КАРТ - ДЕТАЛЬНИЙ ДИЗАЙН */
-
-:root {
-  --bg0: #070504;
-  --bg1: #120c08;
-  --brass0: #f2d07a;
-  --brass1: #c59b3c;
-  --brass2: #7a5520;
-  --ink: #f4e6c6;
-  --shadow: rgba(0,0,0,.85);
+    :root {
+      --bg0: #070504;
+      --bg1: #120c08;
+      --brass0: #f2d07a;
+      --brass1: #c59b3c;
+      --brass2: #7a5520;
+      --ink: #f4e6c6;
+      --shadow: rgba(0,0,0,.85);
   
-  --fire: #c45a2a;
-  --water: #3b6c8e;
-  --air: #9fb6c1;
-  --earth: #7a6a3a;
+      --fire: #c45a2a;
+      --water: #3b6c8e;
+      --air: #9fb6c1;
+      --earth: #7a6a3a;
   
-  --common: #b8a27b;
-  --rare: #6fb2ff;
-  --epic: #b07cff;
-  --legend: #ffcc66;
-}
+      --common: #b8a27b;
+      --rare: #6fb2ff;
+      --epic: #b07cff;
+      --legend: #ffcc66;
+    }
 
-/* ===== БАЗОВІ СТИЛІ ===== */
-.sp-card {
-  width: 100%;
-  max-width: 100%;
-  height: auto;
-  aspect-ratio: 2 / 3;
-  border-radius: 24px;
-  position: relative;
-  padding: 16px;
-  overflow: visible;
-  box-sizing: border-box;
-  --elem: var(--fire);
-  --rar: var(--legend);
-  background:
-    radial-gradient(circle at 25% 25%, rgba(255,220,140,.25) 0%, transparent 65%),
-    radial-gradient(circle at 75% 75%, rgba(196,90,42,.15) 0%, transparent 65%),
-    linear-gradient(135deg, rgba(0,0,0,.4) 0%, rgba(0,0,0,.8) 50%, rgba(0,0,0,.9) 100%),
-    linear-gradient(180deg, #1b120c, #080604);
-  box-shadow:
-    0 25px 50px var(--shadow),
-    inset 0 0 30px rgba(0,0,0,.9),
-    0 0 30px color-mix(in srgb, var(--elem) 30%, transparent),
-    0 0 0 1px rgba(242,208,122,.15);
-  cursor: pointer;
-  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+    /* ===== БАЗОВІ СТИЛІ (MOBILE-FIRST) ===== */
+    .sp-card {
+      /* Адаптивна карта - grid керує розмірами */
+      width: 100%;
+      height: auto;
+      max-width: none;
+      min-width: 0;
+      aspect-ratio: 1 / 1.35; /* Компактний режим для мобільних */
+      border-radius: 12px;
+      position: relative;
+      padding: 8px;
+      overflow: visible;
+      box-sizing: border-box;
+      --elem: var(--fire);
+      --rar: var(--legend);
 
-@media (min-width: 768px) {
-  .sp-card {
-    max-width: 220px;
-    margin: 0 auto;
-  }
-}
-}
+      background:
+        radial-gradient(circle at 25% 25%, rgba(255,220,140,.25) 0%, transparent 65%),
+        radial-gradient(circle at 75% 75%, rgba(196,90,42,.15) 0%, transparent 65%),
+        linear-gradient(135deg, rgba(0,0,0,.4) 0%, rgba(0,0,0,.8) 50%, rgba(0,0,0,.9) 100%),
+        linear-gradient(180deg, #1b120c, #080604);
 
-/* Responsive card sizes */
-@media (max-width: 1024px) {
-  .sp-card {
-    border-radius: 18px;
-    padding: 12px;
-  }
-}
+      box-shadow:
+        0 8px 20px var(--shadow),
+        inset 0 0 15px rgba(0,0,0,.9),
+        0 0 15px color-mix(in srgb, var(--elem) 20%, transparent);
+  
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
 
-@media (max-width: 480px) {
-  .sp-card {
-    border-radius: 12px;
-    padding: 8px;
-    max-width: none;
-    /* width/height не задаємо! */
-  }
-  .sp-card::before { inset: 8px; }
-  .sp-card::after  { inset: 14px; }
-  .corner-gear { transform: scale(0.85); transform-origin: top left; }
-  .element-emoji { font-size: 20px; }
-  .rarity-badge { padding: 4px 10px; font-size: 10px; }
-  .power-plate .power-value { font-size: 0.9rem; }
+    /* ===== COMPACT MOBILE MODE (≤480px) ===== */
+    @media (max-width: 480px) {
+      .sp-card {
+        /* Компактний режим - спрощені стилі */
+        aspect-ratio: 1 / 1.35;
+        border-radius: 10px;
+        padding: 6px;
+    
+        /* Спрощені градієнти для продуктивності */
+        background:
+          linear-gradient(135deg, rgba(0,0,0,.8) 0%, rgba(0,0,0,.9) 100%),
+          linear-gradient(180deg, #1b120c, #080604);
+    
+        box-shadow:
+          0 4px 12px var(--shadow),
+          inset 0 0 10px rgba(0,0,0,.9),
+          0 0 10px color-mix(in srgb, var(--elem) 15%, transparent);
+      }
+  
+      /* Спрощені псевдоелементи для продуктивності */
+      .sp-card::before,
+      .sp-card::after {
+        display: none; /* Вимкнення важких декоративних елементів */
+      }
+  
+      /* Зменшені емодзі */
+      .element-emoji {
+        font-size: 20px;
+        filter: drop-shadow(0 0 8px color-mix(in srgb, var(--elem) 70%, transparent));
+        animation: none; /* Вимкнення анімацій для продуктивності */
+      }
+  
+      /* Зменшені шестерні */
+      .corner-gear {
+        width: 40px;
+        height: 40px;
+        top: 12px;
+        left: 12px;
+      }
+  
+      /* Зменшені бейджі */
+      .rarity-badge {
+        top: 12px;
+        right: 12px;
+        padding: 4px 8px;
+        font-size: 9px;
+      }
+  
+      /* Зменшені заклепки */
+      .rivet {
+        width: 8px;
+        height: 8px;
+      }
+  
+      .rivet-1 { top: 16px; left: 16px; }
+      .rivet-2 { top: 16px; right: 16px; }
+      .rivet-3 { bottom: 16px; left: 16px; }
+      .rivet-4 { bottom: 16px; right: 16px; }
+      .rivet-5 { top: 50%; left: 8px; transform: translateY(-50%); }
+      .rivet-6 { top: 50%; right: 8px; transform: translateY(-50%); }
+      .rivet-7 { left: 50%; top: 8px; transform: translateX(-50%); }
+      .rivet-8 { left: 50%; bottom: 8px; transform: translateX(-50%); }
+  
+      /* Зменшена плашка сили */
+      .power-plate {
+        bottom: 16px;
+        height: 50px;
+      }
+  
+      .power-value {
+        font-size: 32px;
+      }
+  
+      /* Зменшена статистика */
+      .stats-plate {
+        top: 70px;
+        padding: 6px 8px;
+      }
+  
+      .stat-icon {
+        font-size: 12px;
+      }
+  
+      .stat-value {
+        font-size: 11px;
+      }
+  
+      /* Спрощені анімації */
+      @media (prefers-reduced-motion: no-preference) {
+        .sp-card,
+        .element-icon {
+          animation: none;
+        }
+      }
+    }
+
+    /* ===== DESKTOP STYLES (≥768px) ===== */
+    @media (min-width: 768px) {
+      .sp-card {
+        /* Повний стимпанк стиль для десктопу */
+        aspect-ratio: 2 / 3;
+        border-radius: 24px;
+        padding: 16px;
+        max-width: 240px;
+    
+        /* Повторення оригінальних стилів */
+        background:
+          radial-gradient(circle at 25% 25%, rgba(255,220,140,.25) 0%, transparent 65%),
+          radial-gradient(circle at 75% 75%, rgba(196,90,42,.15) 0%, transparent 65%),
+          linear-gradient(135deg, rgba(0,0,0,.4) 0%, rgba(0,0,0,.8) 50%, rgba(0,0,0,.9) 100%),
+          linear-gradient(180deg, #1b120c, #080604);
+
+        box-shadow:
+          0 25px 50px var(--shadow),
+          inset 0 0 30px rgba(0,0,0,.9),
+          0 0 30px color-mix(in srgb, var(--elem) 30%, transparent),
+          0 0 0 1px rgba(242,208,122,.15);
+      }
+  
+      /* Відновлення псевдоелементів */
+      .sp-card::before {
+        content: "";
+        position: absolute;
+        inset: 12px;
+        border-radius: 20px;
+        background:
+          repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(242,208,122,.03) 2px, rgba(242,208,122,.03) 4px),
+          linear-gradient(135deg,
+            color-mix(in srgb, var(--rar) 40%, rgba(242,208,122,.8)),
+            color-mix(in srgb, var(--rar) 30%, rgba(181,106,51,.4)),
+            color-mix(in srgb, var(--rar) 25%, rgba(122,85,32,.3)));
+    
+        box-shadow:
+          inset 0 0 0 3px rgba(0,0,0,.7),
+          inset 0 0 30px rgba(0,0,0,.7),
+          0 0 20px rgba(242,208,122,.1);
+        pointer-events: none;
+        opacity: .97;
+        z-index: 1;
+        display: block;
+      }
+
+      .sp-card::after {
+        content: "";
+        position: absolute;
+        inset: 22px;
+        border-radius: 18px;
+        background:
+          repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255,255,255,.02) 1px, rgba(255,255,255,.02) 2px),
+          radial-gradient(ellipse at 50% 30%, rgba(255,210,120,.12) 0%, transparent 70%),
+          linear-gradient(180deg, rgba(255,210,120,.08) 0%, rgba(0,0,0,.5) 100%),
+          linear-gradient(180deg, #2a1c14, #0f0905);
+    
+        box-shadow:
+          inset 0 0 0 2px rgba(242,208,122,.2),
+          inset 0 0 25px rgba(0,0,0,.8),
+          inset 0 -5px 25px rgba(0,0,0,.6);
+        pointer-events: none;
+        z-index: 2;
+        display: block;
+      }
+
+      /* Відновлення всіх розмірів */
+      .element-emoji {
+        font-size: 32px;
+        animation: emoji-float 3s ease-in-out infinite;
+      }
+
+      .corner-gear {
+        width: 70px;
+        height: 70px;
+        top: 24px;
+        left: 24px;
+      }
+
+      .rarity-badge {
+        top: 24px;
+        right: 24px;
+        padding: 6px 14px;
+        font-size: 11px;
+      }
+
+      .rivet {
+        width: 12px;
+        height: 12px;
+      }
+
+      .rivet-1 { top: 24px; left: 24px; }
+      .rivet-2 { top: 24px; right: 24px; }
+      .rivet-3 { bottom: 24px; left: 24px; }
+      .rivet-4 { bottom: 24px; right: 24px; }
+      .rivet-5 { top: 50%; left: 12px; transform: translateY(-50%); }
+      .rivet-6 { top: 50%; right: 12px; transform: translateY(-50%); }
+      .rivet-7 { left: 50%; top: 12px; transform: translateX(-50%); }
+      .rivet-8 { left: 50%; bottom: 12px; transform: translateX(-50%); }
+
+      .power-plate {
+        bottom: 24px;
+        height: 70px;
+      }
+
+      .power-value {
+        font-size: 48px;
+      }
+
+      .stats-plate {
+        top: 100px;
+        padding: 8px 12px;
+      }
+
+      .stat-icon {
+        font-size: 14px;
+      }
+
+      .stat-value {
+        font-size: 13px;
+      }
+
+      /* Відновлення анімацій */
+      @media (prefers-reduced-motion: no-preference) {
+        .sp-card {
+          animation: card-float 6s ease-in-out infinite;
+        }
+    
+        .element-icon {
+          animation: element-float 3s ease-in-out infinite;
+        }
+      }
+    }
+
+    /* ===== GRID CONTAINERS (MOBILE: 3 КАРТИ В РЯД) ===== */
+    .deck-grid,
+    .collection-grid,
+    .duel-deck {
+      display: grid;
+      gap: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .deck-grid,
+      .collection-grid,
+      .duel-deck {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .deck-grid,
+      .collection-grid,
+      .duel-deck {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 16px;
+      }
+    }
+
+    /* ===== LANDSCAPE BLOCK ===== */
+    @media (orientation: landscape) and (max-width: 768px) {
+      #app-shell {
+        display: none !important;
+      }
+  
+      .landscape-warning {
+        display: flex !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg0);
+        color: var(--brass0);
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 20px;
+        font-size: 1.2rem;
+        z-index: 9999;
+      }
+    }
+
+    .landscape-warning {
+      display: none;
+    }
+
+    /* ===== ЕЛЕМЕНТИ ===== */
+    .sp-card.fire { --elem: var(--fire); }
+    .sp-card.water { --elem: var(--water); }
+    .sp-card.air { --elem: var(--air); }
+    .sp-card.earth { --elem: var(--earth); }
+
+    .sp-card.R1 { --rar: var(--common); }
+    .sp-card.R2 { --rar: #7aaa6f; }
+    .sp-card.R3 { --rar: var(--rare); }
+    .sp-card.R4 { --rar: var(--epic); }
+    .sp-card.R5 { --rar: var(--legend); }
+    .sp-card.R6 { --rar: #ff6b9d; }
+
+    /* ===== ІНШІ АНІМАЦІЇ ТА ЕФЕКТИ ===== */
+    .sp-card:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow:
+        0 15px 30px var(--shadow),
+        inset 0 0 20px rgba(0,0,0,.9),
+        0 0 25px color-mix(in srgb, var(--elem) 30%, transparent);
+    }
+
+    @media (min-width: 768px) {
+      .sp-card:hover {
+        transform: translateY(-6px) scale(1.03) rotateX(1deg) rotateY(0deg);
+        box-shadow:
+          0 20px 35px var(--shadow),
+          inset 0 0 20px rgba(0,0,0,.9),
+          0 0 30px color-mix(in srgb, var(--elem) 40%, transparent),
+          0 0 0 1px rgba(242,208,122,.25);
+      }
+    }
+
+    .sp-card:active {
+      transform: scale(0.95);
+      transition: transform 0.1s ease;
+    }
+
+    /* Стилі для емодзі залишаються без змін, але адаптовані через media queries */
+    @keyframes emoji-float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-3px) scale(1.05); }
+    }
+
+    @keyframes emoji-hover {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.6); }
+      100% { transform: scale(1.4); }
+    }
+
+    @keyframes card-float {
+      0%, 100% {
+        transform: translateY(0px);
+        filter: brightness(1) contrast(1.05);
+      }
+      50% {
+        transform: translateY(-5px);
+        filter: brightness(1.1) contrast(1.1);
+      }
+    }
+
+    @keyframes element-float {
+      0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 15px color-mix(in srgb, var(--elem) 70%, transparent));
+      }
+      50% {
+        transform: scale(1.1);
+        filter: drop-shadow(0 0 20px color-mix(in srgb, var(--elem) 90%, transparent));
+      }
+    }
+
+    /* Специфічні анімації для кожного емодзі залишаються для десктопу */
+    @media (min-width: 768px) {
+      .fire-emoji { animation: fire-flicker 1.5s ease-in-out infinite; }
+      .water-emoji { animation: water-drip 2s ease-in-out infinite; }
+      .air-emoji { animation: air-spin 4s linear infinite; }
+      .earth-emoji { animation: earth-bounce 2.5s ease-in-out infinite; }
+    }
+
+    /* Інші анімації залишаються без змін */
 
 /* Металева рамка з текстурою */
 .sp-card::before {
