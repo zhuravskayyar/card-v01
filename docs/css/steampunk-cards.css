@@ -62,6 +62,7 @@
   .element-emoji { font-size: 28px; }
 }
 
+
 @media (max-width: 420px) {
   .sp-card {
     width: var(--card-width-mobile);
@@ -71,6 +72,17 @@
   }
   .element-emoji { font-size: 22px; }
   .power-plate .power-value { font-size: 0.9rem; }
+}
+
+@media (max-width: 350px) {
+  .sp-card {
+    width: var(--card-width-xs);
+    height: var(--card-height-xs);
+    border-radius: 8px;
+    padding: 4px;
+  }
+  .element-emoji { font-size: 16px; }
+  .power-plate .power-value { font-size: 0.8rem; }
 }
 
 .sp-card:hover {
