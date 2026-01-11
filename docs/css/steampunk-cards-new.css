@@ -84,8 +84,20 @@
   position: absolute;
   inset: 22px;
   border-radius: 18px;
-  background:
-    repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(255,255,255,.02) 1px, rgba(255,255,255,.02) 2px),
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  border-radius: 24px;
+  /* ...інші стилі... */
+}
+
+@media (min-width: 768px) {
+  .sp-card {
+    max-width: 220px;
+    margin: 0 auto;
+  }
+}
     radial-gradient(ellipse at 50% 30%, rgba(255,210,120,.12) 0%, transparent 70%),
     linear-gradient(180deg, rgba(255,210,120,.08) 0%, rgba(0,0,0,.5) 100%),
     linear-gradient(180deg, #2a1c14, #0f0905);
