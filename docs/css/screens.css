@@ -543,10 +543,11 @@
 
   .deck-grid {
     grid-template-columns: repeat(3, 1fr) !important;
-    gap: 4px !important;
+    gap: 10px !important;
     padding: 0 2vw;
     max-width: 100vw;
     box-sizing: border-box;
+    overflow-x: hidden;
   }
   .deck-grid > *, .deck-slot, .sp-card {
     width: 100% !important;

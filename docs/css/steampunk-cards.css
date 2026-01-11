@@ -78,11 +78,11 @@
   .sp-card {
     width: var(--card-width-xs);
     height: var(--card-height-xs);
-    border-radius: 8px;
-    padding: 4px;
+    border-radius: 6px;
+    padding: 2px;
   }
-  .element-emoji { font-size: 16px; }
-  .power-plate .power-value { font-size: 0.8rem; }
+  .element-emoji { font-size: 12px; }
+  .power-plate .power-value { font-size: 0.7rem; }
 }
 
 .sp-card:hover {
