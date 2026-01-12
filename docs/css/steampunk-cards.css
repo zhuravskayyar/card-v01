@@ -634,3 +634,47 @@
   transform: scale(0.95);
   transition: transform 0.1s ease;
 }
+
+/* ===== DUEL CARD TIGHT LAYOUT (mobile-friendly overrides) ===== */
+/* Ensure consistent aspect ratio, remove fixed height, reduce padding */
+.duel-card{
+  aspect-ratio: 3 / 4;
+  height: auto !important;
+  min-height: 0;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+/* Constrain the top icon / dial so it cannot grow and push content */
+.duel-card .icon,
+.duel-card .icon svg,
+.duel-card .icon canvas {
+  width: 42px;
+  height: 42px;
+  max-height: 42px;
+  margin-bottom: 6px;
+  object-fit: contain;
+}
+
+/* Prevent flex children from stretching vertically unexpectedly */
+.duel-card > * {
+  min-height: 0;
+}
+
+/* Control numeric sizes so they don't blow up card height */
+.duel-card .value{
+  font-size: clamp(18px, 5vw, 22px);
+  line-height: 1.1;
+}
+
+/* Mobile-specific tighter aspect/padding */
+@media (max-width: 480px){
+  .duel-card{
+    aspect-ratio: 1 / 1.35;
+    padding: 8px;
+  }
+}
