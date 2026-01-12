@@ -286,43 +286,8 @@
       border-radius: 50%;
     }
 
-    .statusbar{
-      margin-top: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: linear-gradient(180deg, #0b0907, #050403);
-      border: 1px solid rgba(242,208,122,0.18);
-      box-shadow: inset 0 0 10px rgba(0,0,0,0.85);
-      overflow:hidden;
-      position:relative;
-    }
-    .statusbar > span{
-      display:block; height:100%;
-      width: 0%;
-      transition: width 360ms ease, box-shadow 180ms ease;
-      background: linear-gradient(90deg, #ffe082 0%, #ffd54f 50%, #ffd740 100%);
-      box-shadow: 0 0 18px rgba(255,200,60,0.28), inset 0 -4px 12px rgba(255,235,170,0.12);
-      border-radius: 999px;
-    }
-
-    /* subtle darker track overlay for contrast */
-    .statusbar::after{
-      content: '';
-      position: absolute; inset: 0; pointer-events: none;
-      background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.18));
-      mix-blend-mode: multiply;
-    }
-    .status-percent{
-      display:inline-block;
-      margin-left:10px;
-      font-weight:700;
-      color: #ffecb3;
-      text-shadow: 0 1px 0 rgba(0,0,0,0.6);
-      font-size: 12px;
-      align-self: center;
-      min-width:36px;
-      text-align: right;
-    }
+    /* legacy statusbar removed */
+    /* status-percent removed (replaced by hud-xp-row overlay) */
     /* HUD XP row (full-width under hud-top) */
     .hud{
       display:flex;
@@ -3600,8 +3565,7 @@
             </div>
           </div>
 
-          <div class="statusbar" aria-label="Досвід"><span style="width: 0%"></span></div>
-          <div class="status-percent" aria-hidden="true">0%</div>
+          <!-- legacy statusbar removed -->
         </div>
 
         <!-- HUD XP row: full-width under the hud-top -->
@@ -4486,9 +4450,7 @@
         if (gearVal) gearVal.textContent = profile.gears || 0;
         if (coreVal) coreVal.textContent = profile.cores || 0;
         
-        // Update XP bar (legacy statusbar) and HUD-wide XP bar
-        const xpBar = document.querySelector('.statusbar > span');
-        const xpLabel = document.querySelector('.status-percent');
+        // Update HUD-wide XP bar
         const hudXpFill = document.getElementById('xpFill');
         const hudXpPct = document.getElementById('xpPct');
         const hudBar = document.querySelector('.hud-xp-row');
