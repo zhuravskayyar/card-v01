@@ -313,18 +313,6 @@
       box-shadow: 0 0 12px rgba(255,190,60,0.12), inset 0 -6px 14px rgba(255,240,180,0.04);
     }
     .hud-xp-row__label{ position:absolute; inset:0; display:grid; place-items:center; font-size:12px; font-weight:700; color: rgba(255,255,255,0.95); text-shadow: 0 1px 2px rgba(0,0,0,0.6); pointer-events:none }
-    .hud-xp-row__lvl{
-      position: absolute;
-      left: 8px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size:11px;
-      font-weight:700;
-      color: var(--brass-0);
-      text-shadow: 0 1px 0 rgba(0,0,0,0.6);
-      pointer-events:none;
-      z-index: 3;
-    }
     @media (max-width:520px){ .hud-xp-row{ height:10px } .hud-xp-row__label{ font-size:11px } }
 
     /* Tiles grid */
@@ -3584,7 +3572,6 @@
         <div class="hud-xp-row" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
           <div class="hud-xp-row__fill" id="xpFill"></div>
           <div class="hud-xp-row__label" id="xpPct">0%</div>
-          <div class="hud-xp-row__lvl" id="hudLevel">LV 1</div>
         </div>
       </div>
     </header>
@@ -4467,7 +4454,6 @@
         const hudXpFill = document.getElementById('xpFill');
         const hudXpPct = document.getElementById('xpPct');
         const hudBar = document.querySelector('.hud-xp-row');
-        const hudLevelEl = document.getElementById('hudLevel');
 
         const need = navigation.xpNeededForLevel(profile.level || 1) || 100;
         const curXp = profile.xp || 0;
@@ -4477,11 +4463,11 @@
         if (xpBar) xpBar.style.width = `${xpPercent}%`;
         if (xpLabel) xpLabel.textContent = `${xpPercent}%`;
 
-        if (hudXpPct) hudXpPct.textContent = `${xpPercent}%`;
-        if (hudLevelEl) hudLevelEl.textContent = `LV ${profile.level || 1}`;
+        if (hudXpPct) hudXpPct.textContent = `${xpPercent}% (${curXp}/${need})`;
         if (hudBar) {
           hudBar.setAttribute('aria-valuemax', String(need));
           hudBar.setAttribute('aria-valuenow', String(curXp));
+          hudBar.setAttribute('aria-valuetext', `${xpPercent}% (${curXp}/${need})`);
         }
         if (hudXpFill) hudXpFill.style.transform = `scaleX(${pct})`;
         
