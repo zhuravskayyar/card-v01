@@ -15,11 +15,11 @@ body {
 #app-shell {
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
+  min-height: auto;
   width: 100%;
   max-width: 420px;
   margin: 0 auto;
-  padding: 10px 10px 14px;
+  padding: 10px 4px calc(15px + var(--sab));
   position: relative;
 }
 
@@ -30,11 +30,14 @@ body {
   border: 1px solid rgba(245,210,120,0.20);
   border-radius: var(--radius-md);
   box-shadow: 0 10px 24px var(--shadow);
-  position: sticky;
-  top: 0;
+  position: fixed;
+  top: var(--sat);
+  left: 50%;
+  transform: translateX(calc(-50% - 5px));
+  width: 100%;
+  max-width: 420px;
   z-index: var(--z-sticky);
   padding: var(--space-md);
-  position: relative;
 }
 
 #app-header::before {
@@ -185,7 +188,7 @@ body {
 .container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 var(--space-md);
+  padding: 0 calc(var(--space-md) + 5px);
 }
 
 .container-sm {
@@ -240,6 +243,13 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-md);
+}
+
+/* Stabilize grid items: don't stretch and fix row height for smoother scroll (esp. Safari/iOS) */
+.grid-3x3{
+  align-items: start;                 /* замість stretch */
+  align-content: start;
+  grid-auto-rows: var(--card-h, 140px); /* зафіксуй висоту рядка */
 }
 
 .grid-cols-2 {

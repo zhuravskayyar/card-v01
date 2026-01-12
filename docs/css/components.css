@@ -219,22 +219,26 @@
 
 /* Deck grid (3x3) layout */
 .deck-grid.grid-3x3 {
+  width: 100%;
+  margin: 0;
+  padding: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-  align-items: stretch;
+  gap: 6px;
+  align-items: start; /* avoid stretching items vertically */
+  align-content: start;
+  grid-auto-rows: var(--card-h, 140px);
+  box-sizing: border-box;
 }
 
 /* Mobile: gentle full-bleed so cards reach near edges without 50vw hacks */
 @media (max-width: 480px) {
   .deck-screen .deck-grid.grid-3x3 {
-    width: calc(100% + 16px);
-    margin-left: -8px;
-    margin-right: -8px;
-    padding-left: 8px;
-    padding-right: 8px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    gap: 6px;
     box-sizing: border-box;
-    gap: 10px;
   }
 }
 
@@ -251,23 +255,23 @@ body {
 .hud {
   position: fixed;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(calc(-50% - 5px));
   top: calc(8px + var(--sat));
   width: min(520px, calc(100vw - 16px));
   z-index: 9999;
 }
 
 /* Reserve space for HUD so page content is not covered */
-.page, .container, main {
-  padding-top: calc(var(--hud-offset) + var(--sat));
+.page, .container, main, #root, .screen {
+  padding-top: calc(var(--hud-height) + var(--sat));
 }
 
 /* Steampunk card tweaks inside deck grid */
 .deck-grid .sp-card {
-  /* use card variables and apply requested adjustments: +5px width, -5px height */
-  width: calc(var(--card-w) + var(--card-w-delta));
-  min-height: calc(var(--card-h) + var(--card-h-delta));
-  height: calc(var(--card-h) + var(--card-h-delta));
+  /* use card variables and apply requested adjustments */
+  width: 100%;
+  height: var(--card-h, 140px);
+  min-height: var(--card-h, 140px);
   border-radius: 12px;
   padding: 12px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
@@ -276,6 +280,10 @@ body {
   justify-content: center;
   position: relative;
   overflow: hidden;
+  align-self: start;
+  contain: layout paint;      /* ізолює layout карти */
+  transform: translateZ(0);   /* стабілізує композитинг на iOS */
+  will-change: transform;
 }
 
 /* Power badge on card (bottom center) */
@@ -324,14 +332,25 @@ body {
 }
 /* Use variable-based sizing for cards (no !important). */
 .card, .sp-card{
-  width: calc(var(--card-w) + var(--card-w-delta));
-  height: calc(var(--card-h) + var(--card-h-delta));
+  width: 100%;
+  height: var(--card-h, 140px);
+  contain: layout paint;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 @media (max-width: 480px){
   .card, .sp-card{
-    width: calc(var(--card-w-mobile) + var(--card-w-delta));
-    height: calc(var(--card-h-mobile) + var(--card-h-delta));
+    width: 100%;
+    height: var(--card-h-mobile);
+  }
+}
+
+/* Disable hover-scale on devices without hover (touch) to avoid sticky/tap jump on iOS */
+@media (hover: none) {
+  .card:hover, .sp-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
   }
 }
 

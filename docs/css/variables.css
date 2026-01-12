@@ -130,6 +130,7 @@
   --sab: env(safe-area-inset-bottom, 0px);
   /* HUD default offset (height) — can be overridden in layout */
   --hud-offset: 72px;
+  --hud-height: 88px;
 }
 /* When available viewport height is small, reduce card sizes and gaps so the deck screen fits within 844px */
 @media (max-height: 844px) {
