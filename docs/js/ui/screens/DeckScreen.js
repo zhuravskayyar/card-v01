@@ -11,106 +11,82 @@ import { deckStorage } from '../../core/storage.js';
 
 // Функція для адаптивної генерації колоди ворога на основі колоди гравця
 function generateAdaptiveEnemyDeck(playerDeck) {
-  const allCards = [...CARDS];
-  let enemyCards = [];
-  
-  // Аналіз колоди гравця
-  const elementCount = { fire: 0, water: 0, air: 0, earth: 0 };
-  const rarityCount = { common: 0, uncommon: 0, rare: 0, epic: 0, legendary: 0, mythic: 0 };
-  const cardTypes = { attack: 0, defense: 0, special: 0 };
-  
-  playerDeck.forEach(card => {
-    if (elementCount.hasOwnProperty(card.element)) {
-      elementCount[card.element]++;
+  // Variant B: pick target total within playerTotal ± MAX_DIFF and build deck to match
+  const MAX_DIFF = 20;
+  const calcPower = (card, level = 1) => {
+    if (typeof window !== 'undefined' && window.getPower) return window.getPower(card, level);
+    return card.attack || card.basePower || 0;
+  };
+
+  // Compute player's total power
+  const playerTotal = playerDeck.reduce((s, c) => s + (calcPower(c, c.level || 1) || 0), 0);
+
+  const minTarget = Math.max(20, playerTotal - MAX_DIFF);
+  const maxTarget = Math.max(minTarget, playerTotal + MAX_DIFF);
+  const targetTotal = Math.floor(Math.random() * (maxTarget - minTarget + 1)) + minTarget;
+
+  // Pool of candidate cards
+  let pool = CARDS.filter(c => !(String(c.id).startsWith('S'))).slice();
+  if (pool.length < 9) pool = CARDS.slice();
+
+  const cardPower = c => calcPower(c, 1) || 0;
+
+  // Greedy selection to approach targetTotal
+  const selected = [];
+  let currentSum = 0;
+  for (let slot = 0; slot < 9; slot++) {
+    let bestIdx = -1;
+    let bestDelta = Infinity;
+    for (let i = 0; i < pool.length; i++) {
+      const p = cardPower(pool[i]);
+      const newSum = currentSum + p;
+      const delta = Math.abs(newSum - targetTotal);
+      if (delta < bestDelta) { bestDelta = delta; bestIdx = i; }
     }
-    if (rarityCount.hasOwnProperty(card.rarity)) {
-      rarityCount[card.rarity]++;
+    if (bestIdx === -1) break;
+    const pick = pool.splice(bestIdx, 1)[0];
+    selected.push(pick);
+    currentSum += cardPower(pick);
+  }
+
+  // Fill if not enough
+  if (selected.length < 9) {
+    const extras = (CARDS.concat(selected)).slice(0, 9 - selected.length);
+    selected.push(...extras);
+  }
+
+  // Level-up selected cards to approach targetTotal
+  const enriched = selected.map(c => ({ src: c, level: 1, power: cardPower(c) }));
+  let selectedSum = enriched.reduce((s, e) => s + e.power, 0);
+  let attempts = 0;
+  const maxAttempts = 500;
+  while (selectedSum < targetTotal && attempts < maxAttempts) {
+    let bestIdx = -1;
+    let bestGain = 0;
+    for (let i = 0; i < enriched.length; i++) {
+      const e = enriched[i];
+      const nextLevel = Math.min((e.level || 1) + 1, 20);
+      const nextPower = calcPower(e.src, nextLevel) || e.power;
+      const gain = nextPower - e.power;
+      if (gain > bestGain) { bestGain = gain; bestIdx = i; }
     }
-    if (cardTypes.hasOwnProperty(card.type)) {
-      cardTypes[card.type]++;
-    }
+    if (bestIdx === -1 || bestGain <= 0) break;
+    enriched[bestIdx].level = Math.min((enriched[bestIdx].level || 1) + 1, 20);
+    enriched[bestIdx].power = calcPower(enriched[bestIdx].src, enriched[bestIdx].level) || enriched[bestIdx].power;
+    selectedSum = enriched.reduce((s, e) => s + e.power, 0);
+    attempts++;
+  }
+
+  // Map to enemy card objects with level and power fields
+  const enemyDeck9 = enriched.map(e => {
+    const copy = Object.assign({}, e.src);
+    copy.level = e.level || 1;
+    const p = calcPower(e.src, copy.level) || (e.src.attack || e.src.basePower || 0);
+    copy.attack = p; copy.power = p; copy.stats = { ...(copy.stats || {}), power: p };
+    return copy;
   });
-  
-  // Визначаємо переважаючий елемент гравця
-  let dominantElement = Object.keys(elementCount).reduce((a, b) => 
-    elementCount[a] > elementCount[b] ? a : b
-  );
-  
-  // Визначаємо переважаючу рідкість
-  let dominantRarity = Object.keys(rarityCount).reduce((a, b) => 
-    rarityCount[a] > rarityCount[b] ? a : b
-  );
-  
-  // Визначаємо переважаючий тип
-  let dominantType = Object.keys(cardTypes).reduce((a, b) => 
-    cardTypes[a] > cardTypes[b] ? a : b
-  );
-  
-  // Система контр-елементів
-  const elementCounter = {
-    fire: 'water',
-    water: 'earth', 
-    earth: 'air',
-    air: 'fire'
-  };
-  
-  // Система контр-типів
-  const typeCounter = {
-    attack: 'defense',
-    defense: 'special',
-    special: 'attack'
-  };
-  
-  // Крок 1: Додаємо контр-елементи (3 карти)
-  const counterElement = elementCounter[dominantElement] || 'fire';
-  const counterElementCards = allCards.filter(card => 
-    card.element === counterElement
-  ).sort(() => Math.random() - 0.5).slice(0, 3);
-  
-  enemyCards.push(...counterElementCards);
-  
-  // Крок 2: Додаємо контр-типи (2 карти)
-  const counterType = typeCounter[dominantType] || 'attack';
-  const counterTypeCards = allCards.filter(card => 
-    card.type === counterType && 
-    !enemyCards.some(c => c.id === card.id)
-  ).sort(() => Math.random() - 0.5).slice(0, 2);
-  
-  enemyCards.push(...counterTypeCards);
-  
-  // Крок 3: Додаємо карти з трохи вищою рідкістю (2 карти)
-  const rarityOrder = ['common', 'uncommon', 'rare', 'epic', 'legendary', 'mythic'];
-  const currentRarityIndex = rarityOrder.indexOf(dominantRarity);
-  const targetRarityIndex = Math.min(currentRarityIndex + 1, rarityOrder.length - 1);
-  const targetRarity = rarityOrder[targetRarityIndex];
-  
-  const higherRarityCards = allCards.filter(card => 
-    card.rarity === targetRarity &&
-    !enemyCards.some(c => c.id === card.id)
-  ).sort(() => Math.random() - 0.5).slice(0, 2);
-  
-  enemyCards.push(...higherRarityCards);
-  
-  // Крок 4: Заповнюємо решту випадковими картами (до 9)
-  const remainingSlots = 9 - enemyCards.length;
-  if (remainingSlots > 0) {
-    const remainingCards = allCards.filter(card => 
-      !enemyCards.some(c => c.id === card.id)
-    ).sort(() => Math.random() - 0.5).slice(0, remainingSlots);
-    
-    enemyCards.push(...remainingCards);
-  }
-  
-  // Забезпечуємо баланс, якщо не вистачило карт
-  if (enemyCards.length < 9) {
-    const extraCards = allCards.filter(card => 
-      !enemyCards.some(c => c.id === card.id)
-    ).sort(() => Math.random() - 0.5).slice(0, 9 - enemyCards.length);
-    
-    enemyCards.push(...extraCards);
-  }
-  
-  return enemyCards.slice(0, 9);
+
+  return enemyDeck9.slice(0, 9);
 }
 
 export const DeckScreen = () => {
