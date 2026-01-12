@@ -312,6 +312,17 @@
       background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.18));
       mix-blend-mode: multiply;
     }
+    .status-percent{
+      display:inline-block;
+      margin-left:10px;
+      font-weight:700;
+      color: #ffecb3;
+      text-shadow: 0 1px 0 rgba(0,0,0,0.6);
+      font-size: 12px;
+      align-self: center;
+      min-width:36px;
+      text-align: right;
+    }
 
     /* Tiles grid */
     .tiles{
@@ -3561,6 +3572,7 @@
         </div>
       </div>
       <div class="statusbar" aria-label="Досвід"><span style="width: 0%"></span></div>
+      <div class="status-percent" aria-hidden="true">0%</div>
     </header>
 
     <!-- Main content container -->
@@ -4437,12 +4449,14 @@
         if (gearVal) gearVal.textContent = profile.gears || 0;
         if (coreVal) coreVal.textContent = profile.cores || 0;
         
-        // Update XP bar
+        // Update XP bar and percent label
         const xpBar = document.querySelector('.statusbar > span');
+        const xpLabel = document.querySelector('.status-percent');
         if (xpBar) {
           const need = navigation.xpNeededForLevel(profile.level || 1);
           const xpPercent = need ? Math.min(100, Math.round(((profile.xp || 0) / need) * 100)) : 0;
           xpBar.style.width = `${xpPercent}%`;
+          if (xpLabel) xpLabel.textContent = `${xpPercent}%`;
         }
         
         // Update deck power on home screen (use actual progress levels)
