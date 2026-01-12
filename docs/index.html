@@ -6211,10 +6211,14 @@
       createCardNode(card, isPlayer, slotIdx) {
         // Try to reuse existing deck/card renderer so duel visuals match deck visuals
         try {
-          const powerVal = card.power || card.attack || card.basePower || 0;
+          // If duel passes lightweight objects (id + power), resolve full card data from DB
+          const srcCard = (card && card.id && window.getCardById) ? window.getCardById(card.id) : null;
+          const powerVal = card.power || card.attack || (srcCard ? (srcCard.basePower || srcCard.power) : 0) || 0;
+          const renderSource = srcCard ? { ...srcCard, power: powerVal } : { ...card, power: powerVal };
+
           // If site has a deck renderer, prefer it (keeps consistent HTML)
           if (typeof this.renderDeckCard === 'function') {
-            const html = this.renderDeckCard({ ...card, basePower: card.basePower, attack: powerVal }, card.level || 1);
+            const html = this.renderDeckCard(renderSource, card.level || renderSource.level || 1);
             const wrapper = document.createElement('div');
             wrapper.innerHTML = html.trim();
             const node = wrapper.firstElementChild || wrapper;
@@ -6224,7 +6228,7 @@
           }
 
           if (window.cardRenderer && typeof window.cardRenderer.render === 'function') {
-            const html = window.cardRenderer.render({ ...card, power: powerVal }, { level: card.level || 1, power: powerVal });
+            const html = window.cardRenderer.render(renderSource, { level: card.level || renderSource.level || 1, power: powerVal });
             const wrapper = document.createElement('div');
             wrapper.innerHTML = html.trim();
             const node = wrapper.firstElementChild || wrapper;
@@ -6234,9 +6238,8 @@
           }
 
           if (window.createCardView) {
-            const view = window.createCardView({ ...card, power: powerVal, level: card.level || 1 });
+            const view = window.createCardView(renderSource);
             if (view && view.outerHTML) {
-              // DOM element returned
               view.classList.add('duel-card');
               if (slotIdx !== undefined) view.dataset.slot = slotIdx;
               return view;
