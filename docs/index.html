@@ -323,9 +323,16 @@
       min-width:36px;
       text-align: right;
     }
-    /* HUD XP wide bar (full-width row with percent overlay) */
-    .hud-xp-wide{
-      margin-top:10px;
+    /* HUD XP row (full-width under hud-top) */
+    .hud{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      padding: 10px 12px 12px;
+    }
+    .hud-top{ display:flex; flex-direction:column; gap:6px }
+
+    .hud-xp-row{
       width:100%;
       height:12px;
       border-radius:999px;
@@ -334,22 +341,14 @@
       background: rgba(255,255,255,0.06);
       box-shadow: inset 0 0 0 1px rgba(255,215,120,0.08);
     }
-    .hud-xp-wide__fill{
-      position:absolute; inset:0;
-      transform-origin: left center;
-      transform: scaleX(0);
-      border-radius:999px;
+    .hud-xp-row__fill{
+      position:absolute; inset:0; transform-origin:left center; transform:scaleX(0);
+      border-radius:999px; transition: transform 220ms ease;
       background: linear-gradient(90deg, rgba(255,215,120,0.95), rgba(80,200,140,0.95));
-      transition: transform 220ms ease;
       box-shadow: 0 0 12px rgba(255,190,60,0.12), inset 0 -6px 14px rgba(255,240,180,0.04);
     }
-    .hud-xp-wide__label{
-      position:absolute; inset:0; display:grid; place-items:center;
-      font-size:12px; font-weight:700; letter-spacing:0.2px;
-      color: rgba(255,255,255,0.95); text-shadow: 0 1px 2px rgba(0,0,0,0.6);
-      pointer-events:none;
-    }
-    @media (max-width:520px){ .hud-xp-wide{ height:10px } .hud-xp-wide__label{ font-size:11px } }
+    .hud-xp-row__label{ position:absolute; inset:0; display:grid; place-items:center; font-size:12px; font-weight:700; color: rgba(255,255,255,0.95); text-shadow: 0 1px 2px rgba(0,0,0,0.6); pointer-events:none }
+    @media (max-width:520px){ .hud-xp-row{ height:10px } .hud-xp-row__label{ font-size:11px } }
 
     /* Tiles grid */
     .tiles{
@@ -3586,25 +3585,30 @@
     <div class="noise"></div>
 
     <header class="topbar">
-      <div class="toprow">
-        <div class="avatar">
-          <div class="portrait" aria-hidden="true"></div>
-          <div class="level">Рівень: <span>1</span></div>
+      <div class="hud">
+        <div class="hud-top">
+          <div class="toprow">
+            <div class="avatar">
+              <div class="portrait" aria-hidden="true"></div>
+              <div class="level">Рівень: <span>1</span></div>
+            </div>
+
+            <div class="meters">
+              <div class="meter" title="Болти"><span>🔩</span><strong id="home-bolts">500</strong></div>
+              <div class="meter" title="Шестерні"><span>⚙️</span><strong id="home-gears">0</strong></div>
+              <div class="meter" title="Парові ядра"><span>✴︎</span><strong id="home-cores">0</strong></div>
+            </div>
+          </div>
+
+          <div class="statusbar" aria-label="Досвід"><span style="width: 0%"></span></div>
+          <div class="status-percent" aria-hidden="true">0%</div>
         </div>
 
-        <div class="meters">
-          <div class="meter" title="Болти"><span>🔩</span><strong id="home-bolts">500</strong></div>
-          <div class="meter" title="Шестерні"><span>⚙️</span><strong id="home-gears">0</strong></div>
-          <div class="meter" title="Парові ядра"><span>✴︎</span><strong id="home-cores">0</strong></div>
+        <!-- HUD XP row: full-width under the hud-top -->
+        <div class="hud-xp-row" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div class="hud-xp-row__fill" id="xpFill"></div>
+          <div class="hud-xp-row__label" id="xpPct">0%</div>
         </div>
-      </div>
-      <div class="statusbar" aria-label="Досвід"><span style="width: 0%"></span></div>
-      <div class="status-percent" aria-hidden="true">0%</div>
-
-      <!-- HUD XP wide bar (full-width row with percent overlay) -->
-      <div class="hud-xp-wide" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-        <div class="hud-xp-wide__fill" id="xpFill"></div>
-        <div class="hud-xp-wide__label" id="xpPct">0%</div>
       </div>
     </header>
 
@@ -4487,7 +4491,7 @@
         const xpLabel = document.querySelector('.status-percent');
         const hudXpFill = document.getElementById('xpFill');
         const hudXpPct = document.getElementById('xpPct');
-        const hudBar = document.querySelector('.hud-xp-wide');
+        const hudBar = document.querySelector('.hud-xp-row');
 
         const need = navigation.xpNeededForLevel(profile.level || 1) || 100;
         const curXp = profile.xp || 0;
