@@ -2626,11 +2626,35 @@
 
 
     /* ===== DUEL SCREEN ===== */
-    .duel-header {
+      .duel-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 12px;
+    }
+    /* Duel grid: 3 columns, compressible */
+    .duel-grid{
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      width: 100%;
+      margin: 12px 0;
+    }
+    .duel-grid > div { min-width: 0; }
+    .enemy-slot, .player-slot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 0;
+    }
+    .mult-slot { display:flex; align-items:center; justify-content:center; }
+    .mult { width:100%; display:inline-flex; align-items:center; justify-content:center; padding:10px 8px; border-radius:999px; cursor:pointer; }
+    .mult-neutral { background: rgba(0,0,0,0.35); color: var(--brass-0); border:1px solid rgba(242,208,122,0.12); }
+    .mult-good { background: linear-gradient(180deg,#2e7d32,#1b5e20); color:#fff; }
+    .mult-bad { background: linear-gradient(180deg,#7b2b2b,#5a1515); color:#fff; }
+
+    @media (max-width: 360px) {
+      .duel-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
     .duel-title {
       font-size: 18px;
@@ -3597,9 +3621,23 @@
             </div>
           </div>
 
-          <div class="enemy-hand" id="enemyHand"></div>
-          <div class="duel-multipliers" id="duelMultipliers"></div>
-          <div class="player-hand" id="playerHand"></div>
+          <!-- Duel grid: 3 columns — enemy row, multipliers row, player row -->
+          <div class="duel-grid" id="duelGrid">
+            <!-- Enemy slots -->
+            <div class="enemy-slot" id="enemySlot0"></div>
+            <div class="enemy-slot" id="enemySlot1"></div>
+            <div class="enemy-slot" id="enemySlot2"></div>
+
+            <!-- Multiplier slots (will be populated per column) -->
+            <div class="mult-slot" id="multSlot0"></div>
+            <div class="mult-slot" id="multSlot1"></div>
+            <div class="mult-slot" id="multSlot2"></div>
+
+            <!-- Player slots -->
+            <div class="player-slot" id="playerSlot0"></div>
+            <div class="player-slot" id="playerSlot1"></div>
+            <div class="player-slot" id="playerSlot2"></div>
+          </div>
 
           <!-- HUD під рукою гравця: аватар і смуга HP -->
           <div class="player-status hud-status">
@@ -5999,31 +6037,20 @@
       updatePlayerMultiplierPreview() {
         if (!window.CURRENT_DUEL) return;
         const duel = window.CURRENT_DUEL;
-        const container = document.getElementById('duelMultipliers');
-        if (!container) return;
-        
-        container.innerHTML = '';
-        
-        // Create 3 multiplier badges for 3 slots
+        // Populate per-column multiplier slots if available
         for (let i = 0; i < 3; i++) {
+          const multSlot = document.getElementById(`multSlot${i}`);
+          if (!multSlot) continue;
           const pCard = duel.player.hand[i];
           const eCard = duel.enemy.hand[i];
-          
           if (!pCard || !eCard) {
-            container.innerHTML += '<div class="mult-badge" style="opacity:0.3"><span class="mult-text">—</span></div>';
+            multSlot.innerHTML = '<div class="mult mult-neutral" style="opacity:0.3"><span class="mult-text">—</span></div>';
             continue;
           }
-          
-          const mult = (window.MULT[pCard.element]?.[eCard.element]) ?? 1;
+          const mult = (window.MULT && window.MULT[pCard.element] && window.MULT[pCard.element][eCard.element]) ?? 1;
           const multClass = mult > 1 ? 'mult-good' : mult < 1 ? 'mult-bad' : 'mult-neutral';
           const multText = mult === 1 ? '× 1' : `× ${mult.toFixed(1)}`;
-          
-          container.innerHTML += `
-            <div class="mult-badge ${multClass}">
-              <span class="swords"></span>
-              <span class="mult-text">${multText}</span>
-            </div>
-          `;
+          multSlot.innerHTML = `<button class="mult ${multClass}" data-slot="${i}" data-mult="${mult}"><span class="mult-text">${multText}</span></button>`;
         }
       },
       
@@ -6278,30 +6305,60 @@
         if (enemyPowerEl) enemyPowerEl.textContent = duel.enemy.maxHp;
         if (playerPowerEl) playerPowerEl.textContent = duel.player.maxHp;
 
-        const enemyHandEl  = document.getElementById('enemyHand');
-        const playerHandEl = document.getElementById('playerHand');
-        enemyHandEl.innerHTML = '';
-        playerHandEl.innerHTML = '';
+        // Prefer slot-based rendering if duelGrid slots exist (one column per slot)
+        const enemySlot0 = document.getElementById('enemySlot0');
+        const enemySlot1 = document.getElementById('enemySlot1');
+        const enemySlot2 = document.getElementById('enemySlot2');
+        const playerSlot0 = document.getElementById('playerSlot0');
+        const playerSlot1 = document.getElementById('playerSlot1');
+        const playerSlot2 = document.getElementById('playerSlot2');
 
-        // Render enemy hand (no interactions)
-        duel.enemy.hand.forEach((c, idx) => {
-          const node = this.createCardNode(c, false, idx);
-          enemyHandEl.appendChild(node);
-        });
+        if (enemySlot0 && playerSlot0) {
+          // Clear existing slots
+          [enemySlot0, enemySlot1, enemySlot2, playerSlot0, playerSlot1, playerSlot2].forEach(el => { if(el) el.innerHTML = ''; });
 
-        // Render player hand (click to play)
-        duel.player.hand.forEach((c, idx) => {
-          const node = this.createCardNode(c, true, idx);
-          node.addEventListener('click', () => {
-            if (duel.finished) return;
-            window.CURRENT_DUEL = window.playTurn(duel, idx);
-            this.renderDuel();
-            if (window.CURRENT_DUEL.finished) {
-              this.showDuelResult(window.CURRENT_DUEL);
-            }
+          // Render enemy hand into slots
+          duel.enemy.hand.forEach((c, idx) => {
+            const node = this.createCardNode(c, false, idx);
+            const slot = document.getElementById(`enemySlot${idx}`);
+            if (slot) slot.appendChild(node);
           });
-          playerHandEl.appendChild(node);
-        });
+
+          // Render player hand into slots (click to play)
+          duel.player.hand.forEach((c, idx) => {
+            const node = this.createCardNode(c, true, idx);
+            node.addEventListener('click', () => {
+              if (duel.finished) return;
+              window.CURRENT_DUEL = window.playTurn(duel, idx);
+              this.renderDuel();
+              if (window.CURRENT_DUEL.finished) this.showDuelResult(window.CURRENT_DUEL);
+            });
+            const slot = document.getElementById(`playerSlot${idx}`);
+            if (slot) slot.appendChild(node);
+          });
+        } else {
+          // Fallback to original behavior
+          const enemyHandEl  = document.getElementById('enemyHand');
+          const playerHandEl = document.getElementById('playerHand');
+          if (enemyHandEl) enemyHandEl.innerHTML = '';
+          if (playerHandEl) playerHandEl.innerHTML = '';
+
+          duel.enemy.hand.forEach((c, idx) => {
+            const node = this.createCardNode(c, false, idx);
+            enemyHandEl && enemyHandEl.appendChild(node);
+          });
+
+          duel.player.hand.forEach((c, idx) => {
+            const node = this.createCardNode(c, true, idx);
+            node.addEventListener('click', () => {
+              if (duel.finished) return;
+              window.CURRENT_DUEL = window.playTurn(duel, idx);
+              this.renderDuel();
+              if (window.CURRENT_DUEL.finished) this.showDuelResult(window.CURRENT_DUEL);
+            });
+            playerHandEl && playerHandEl.appendChild(node);
+          });
+        }
 
         const logEl = document.getElementById('duelLog');
         logEl.innerHTML = duel.log.map(r => `Хід ${r.turn}: Ви(${r.player.element}) ${r.player.dmg} ×${r.player.mult} ↔ Ворог(${r.enemy.element}) ${r.enemy.dmg} ×${r.enemy.mult}`).join('<br>');
