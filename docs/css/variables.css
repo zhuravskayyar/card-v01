@@ -123,12 +123,48 @@
 }
 
 /* When available viewport height is small, reduce card sizes and gaps so the deck screen fits within 844px */
-@media (max-height: 844px) {
-  :root {
-    --card-width: 100px;
-    --card-height: 150px;
-    --card-width-mobile: 90px;
-    --card-height-mobile: 135px;
-    --space-sm: 0.4rem;
+  /* Adaptive height breakpoints — practical iPhone targets */
+  @media (max-height: 667px) {
+    /* iPhone SE / 8 and similar — compact */
+    :root {
+      --card-width: 88px;
+      --card-height: 132px;
+      --card-width-mobile: 78px;
+      --card-height-mobile: 120px;
+      --space-sm: 0.35rem;
+      --space-md: 0.85rem;
+    }
   }
-}
+
+  @media (min-height: 668px) and (max-height: 811px) {
+    /* smaller phones */
+    :root {
+      --card-width: 96px;
+      --card-height: 144px;
+      --card-width-mobile: 86px;
+      --card-height-mobile: 132px;
+      --space-sm: 0.4rem;
+    }
+  }
+
+  @media (min-height: 812px) and (max-height: 925px) {
+    /* modern iPhone sizes (X / 11 / 12 / 13) */
+    :root {
+      --card-width: 100px;
+      --card-height: 150px;
+      --card-width-mobile: 92px;
+      --card-height-mobile: 138px;
+      --space-sm: 0.45rem;
+    }
+  }
+
+  @media (min-height: 926px) {
+    /* large screens / Pro Max */
+    :root {
+      --card-width: 110px;
+      --card-height: 165px;
+      --card-width-mobile: 100px;
+      --card-height-mobile: 150px;
+      --space-sm: 0.5rem;
+    }
+  }
