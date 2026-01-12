@@ -182,11 +182,15 @@ if (typeof window !== 'undefined') {
     return window.dropCardsWithOptions(profile, allCards, starterCards, count, pityCounters, {});
   };
 
+  // Lowered drop chances to reduce card drops after duels
   const getDropChance = (result) => {
     switch (result) {
-      case 'win': return 0.35;
-      case 'lose': return 0.10;
-      case 'draw': return 0.20;
+      // Previously 35% on win — reduce to ~12%
+      case 'win': return 0.12;
+      // Previously 10% on lose — reduce to ~3%
+      case 'lose': return 0.03;
+      // Previously 20% on draw — reduce to ~7%
+      case 'draw': return 0.07;
       default: return 0;
     }
   };
