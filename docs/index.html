@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Steampunk Menu</title>
   <link rel="stylesheet" href="css/steampunk-cards.css">
+  <link rel="stylesheet" href="css/cards.tokens.css">
+  <link rel="stylesheet" href="css/cards.component.css">
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="assets/img/icon-192.svg" type="image/svg+xml">
   <style>
@@ -2984,9 +2986,7 @@
 
     /* Menu list */
     .menu-list {
-      padding: 0; /* remove internal panel padding so it is full-bleed */
-      margin: 0;
-      overflow: hidden;
+      padding: 6px;
     }
 
     .menu-row {
@@ -2994,20 +2994,14 @@
       background: transparent;
       color: rgba(244,230,198,.92);
       border: 1px solid rgba(242,208,122,.10);
-      border-radius: 0; /* flush edges between rows */
-      padding: 12px 16px; /* comfortable inner padding for text */
-      margin: 0; /* rows touch each other vertically */
+      border-radius: 12px;
+      padding: 12px 10px;
+      margin: 6px 0;
       text-align: left;
       cursor: pointer;
       font-family: Georgia, "Times New Roman", serif;
       font-size: 14px;
       transition: all 0.2s ease;
-    }
-
-    /* make the panel itself span edge-to-edge inside the deck screen */
-    #page-deck .menu-list.panel {
-      border-radius: 14px; /* keep outer rounding */
-      padding: 0;
     }
 
     .menu-row:hover {
@@ -3229,8 +3223,7 @@
 
     /* тільки сторінка колоди: мінімум відступів */
     #page-deck { padding: 0 !important; }
-    /* Make deck screen full-bleed so inner panels (menu) reach edges */
-    #page-deck .screen { padding: 0 !important; }
+    #page-deck .screen { padding: 8px !important; }
 
     /* main grids used in project */
     .tiles, .cards-grid { grid-template-columns: repeat(3, minmax(0,1fr)) !important; gap:6px !important; padding:6px 8px !important; width:100% !important; max-width:100% !important; }
@@ -6919,5 +6912,7 @@
 
   </script>
   <!-- orientation script removed -->
+  <script src="js/ui/CardRenderer.js"></script>
+  <script src="tools/migrate-cards.js" defer></script>
 </body>
 </html>
