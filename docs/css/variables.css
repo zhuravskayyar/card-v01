@@ -121,3 +121,14 @@
   --card-width-sm: 80px;
   --card-height-sm: 120px;
 }
+
+/* When available viewport height is small, reduce card sizes and gaps so the deck screen fits within 844px */
+@media (max-height: 844px) {
+  :root {
+    --card-width: 100px;
+    --card-height: 150px;
+    --card-width-mobile: 90px;
+    --card-height-mobile: 135px;
+    --space-sm: 0.4rem;
+  }
+}
