@@ -323,22 +323,33 @@
       min-width:36px;
       text-align: right;
     }
-    /* HUD XP component (compact, mobile-friendly) */
-    .hud-xp{
-      margin-top:8px;
-      width: 100%;
-      max-width: 340px;
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      align-self: flex-end;
+    /* HUD XP wide bar (full-width row with percent overlay) */
+    .hud-xp-wide{
+      margin-top:10px;
+      width:100%;
+      height:12px;
+      border-radius:999px;
+      position:relative;
+      overflow:hidden;
+      background: rgba(255,255,255,0.06);
+      box-shadow: inset 0 0 0 1px rgba(255,215,120,0.08);
     }
-    .hud-xp__row{ display:flex; justify-content:space-between; align-items:baseline; gap:10px; }
-    .hud-xp__lvl{ font-weight:700; color: var(--brass-0); font-size:13px }
-    .hud-xp__text{ font-size:12px; color: #ffefc8; opacity:0.95 }
-    .hud-xp__bar{ height:10px; border-radius:999px; overflow:hidden; background: rgba(0,0,0,0.28); box-shadow: inset 0 0 0 1px rgba(255,230,140,0.06); }
-    .hud-xp__fill{ height:100%; width:100%; transform-origin: left center; transform: scaleX(0); border-radius:999px; transition: transform 260ms cubic-bezier(.2,.9,.2,1); background: linear-gradient(90deg, #ffd54f 0%, #ffe082 50%, #fff7c2 100%); box-shadow: 0 0 12px rgba(255,200,60,0.18), inset 0 -6px 14px rgba(255,240,180,0.06); }
-    @media (max-width:520px){ .hud-xp{ max-width: 260px; } .hud-xp__text{ font-size:11px } }
+    .hud-xp-wide__fill{
+      position:absolute; inset:0;
+      transform-origin: left center;
+      transform: scaleX(0);
+      border-radius:999px;
+      background: linear-gradient(90deg, rgba(255,215,120,0.95), rgba(80,200,140,0.95));
+      transition: transform 220ms ease;
+      box-shadow: 0 0 12px rgba(255,190,60,0.12), inset 0 -6px 14px rgba(255,240,180,0.04);
+    }
+    .hud-xp-wide__label{
+      position:absolute; inset:0; display:grid; place-items:center;
+      font-size:12px; font-weight:700; letter-spacing:0.2px;
+      color: rgba(255,255,255,0.95); text-shadow: 0 1px 2px rgba(0,0,0,0.6);
+      pointer-events:none;
+    }
+    @media (max-width:520px){ .hud-xp-wide{ height:10px } .hud-xp-wide__label{ font-size:11px } }
 
     /* Tiles grid */
     .tiles{
@@ -3590,16 +3601,10 @@
       <div class="statusbar" aria-label="Досвід"><span style="width: 0%"></span></div>
       <div class="status-percent" aria-hidden="true">0%</div>
 
-      <!-- HUD XP block: transform-based fill (mobile-friendly) -->
-      <div class="hud-xp" aria-hidden="false">
-        <div class="hud-xp__row">
-          <span class="hud-xp__lvl">LV <span id="hud-xp-lvl">1</span></span>
-          <span class="hud-xp__text"><span id="xpCur">0</span>/<span id="xpMax">100</span> XP</span>
-        </div>
-
-        <div class="hud-xp__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-          <div class="hud-xp__fill" id="xpFill"></div>
-        </div>
+      <!-- HUD XP wide bar (full-width row with percent overlay) -->
+      <div class="hud-xp-wide" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="hud-xp-wide__fill" id="xpFill"></div>
+        <div class="hud-xp-wide__label" id="xpPct">0%</div>
       </div>
     </header>
 
@@ -4477,33 +4482,27 @@
         if (gearVal) gearVal.textContent = profile.gears || 0;
         if (coreVal) coreVal.textContent = profile.cores || 0;
         
-        // Update XP bar (legacy statusbar) and HUD XP block
+        // Update XP bar (legacy statusbar) and HUD-wide XP bar
         const xpBar = document.querySelector('.statusbar > span');
         const xpLabel = document.querySelector('.status-percent');
-        const hudXpCur = document.getElementById('xpCur');
-        const hudXpMax = document.getElementById('xpMax');
         const hudXpFill = document.getElementById('xpFill');
-        const hudXpLvl = document.getElementById('hud-xp-lvl');
-        const hudBar = document.querySelector('.hud-xp__bar');
+        const hudXpPct = document.getElementById('xpPct');
+        const hudBar = document.querySelector('.hud-xp-wide');
 
         const need = navigation.xpNeededForLevel(profile.level || 1) || 100;
         const curXp = profile.xp || 0;
-        const xpPercent = Math.min(100, Math.round((curXp / need) * 100));
+        const pct = need > 0 ? Math.max(0, Math.min(1, curXp / need)) : 0;
+        const xpPercent = Math.round(pct * 100);
 
         if (xpBar) xpBar.style.width = `${xpPercent}%`;
         if (xpLabel) xpLabel.textContent = `${xpPercent}%`;
 
-        if (hudXpCur) hudXpCur.textContent = curXp;
-        if (hudXpMax) hudXpMax.textContent = need;
-        if (hudXpLvl) hudXpLvl.textContent = profile.level || 1;
+        if (hudXpPct) hudXpPct.textContent = `${xpPercent}%`;
         if (hudBar) {
           hudBar.setAttribute('aria-valuemax', String(need));
           hudBar.setAttribute('aria-valuenow', String(curXp));
         }
-        if (hudXpFill) {
-          const scale = need > 0 ? Math.max(0, Math.min(1, curXp / need)) : 0;
-          hudXpFill.style.transform = `scaleX(${scale})`;
-        }
+        if (hudXpFill) hudXpFill.style.transform = `scaleX(${pct})`;
         
         // Update deck power on home screen (use actual progress levels)
         if (profile.deckCards && profile.deckCards.length > 0) {
