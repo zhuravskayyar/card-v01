@@ -691,3 +691,49 @@
     height: 148px;
   }
 }
+
+/* Duel-specific tightening to avoid vertical stretching */
+.duel-card.sp-card,
+.duel-card{
+  /* ensure duel-card overrides generic .sp-card settings */
+  width: 96px !important;
+  height: 128px !important;
+  padding: 8px !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.duel-card .power-plate{
+  position: absolute !important;
+  bottom: 8px !important;
+  left: 8px !important;
+  right: 8px !important;
+  height: 32px !important;
+  border-radius: 10px !important;
+  padding: 4px 8px !important;
+}
+
+.duel-card .power-value{
+  font-size: 18px !important;
+  line-height: 1 !important;
+}
+
+.duel-card .corner-gear{
+  width: 36px !important;
+  height: 36px !important;
+  top: 8px !important;
+  left: 8px !important;
+}
+
+.duel-card .gear-inner{ inset: 6px !important; }
+.duel-card .element-emoji{ font-size: 18px !important; }
+.duel-card .element-icon{ width: 28px !important; height: 28px !important; }
+.duel-card .rivet{ width: 8px !important; height: 8px !important; }
+.duel-card .card-name{ font-size: 12px !important; }
+
+/* If grid uses .duel-grid center layout, prevent columns from stretching */
+.duel-grid .sp-card, .duel-grid .duel-card{ align-self: start; }
