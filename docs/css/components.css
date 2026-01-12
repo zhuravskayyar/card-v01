@@ -195,6 +195,22 @@
   align-items: stretch;
 }
 
+/* Make deck-grid full-bleed (stretch to viewport edges) while preserving
+   inner padding and safe-area insets. This makes the 3x3 grid reach the
+   left/right edges on narrow screens like in the mockup. */
+.deck-screen .deck-grid.grid-3x3 {
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  width: 100vw;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
 /* Safe-area helpers (iOS notch / dynamic viewport) */
 body {
   padding-top: var(--sat);
