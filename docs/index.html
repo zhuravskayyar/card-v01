@@ -2656,6 +2656,33 @@
       text-align: center;
     }
 
+    /* Mobile tweaks for Duel screen */
+    @media (max-width: 480px) {
+      .duel-header { flex-direction: column; align-items: stretch; gap: 8px; }
+      .duel-hud { flex-direction: column; gap: 8px; }
+      .hud-status { justify-content: space-between; }
+      .hud-status .hp-wrapper { min-width: 0 !important; }
+      .duel-multipliers { flex-wrap: wrap; gap: 8px; }
+      .duel-log { text-align: left; font-size: 12px; }
+
+      /* Allow hands to scroll horizontally on very narrow screens */
+      .enemy-hand, .player-hand {
+        gap: 8px;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding: 6px 4px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      /* Make cards smaller and responsive inside duel hands */
+      .duel-hand .sp-card, .enemy-hand .sp-card, .player-hand .sp-card {
+        width: 34vw !important;
+        max-width: 140px !important;
+        height: auto !important;
+        aspect-ratio: 2 / 3 !important;
+      }
+    }
+
     /* HUD: avatar + HP bar for enemy/player */
     .hud-status{
       display:flex;
