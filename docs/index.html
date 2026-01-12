@@ -6296,9 +6296,12 @@
       },
 
       xpNeededForLevel(level) {
-        const base = 100;
-        const growth = 1.12; // плавне зростання вимоги
-        return Math.floor(base * Math.pow(growth, (level || 1) - 1));
+        // Exponential XP curve: increase base and growth for steeper requirements
+        // New defaults: base 200, growth 1.25 (level 1 -> 200, level 5 -> ~610)
+        const base = 200;
+        const growth = 1.25;
+        const lvl = Math.max(1, Math.floor(level || 1));
+        return Math.floor(base * Math.pow(growth, lvl - 1));
       },
 
       pendingDuel: null,
