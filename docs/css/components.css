@@ -266,6 +266,17 @@ body {
   .deck-screen { overflow: hidden; }
   .deck-screen .cards-grid, .deck-screen .deck-selection { max-height: calc(844px - 220px); }
 }
+
+/* Reduce gap on small screens to avoid horizontal scroll */
+@media (max-width: 420px) {
+  .deck-grid.grid-3x3 { gap: 10px; }
+}
+
+@media (max-width: 360px) {
+  .deck-grid.grid-3x3 { gap: 8px; }
+  .deck-grid .sp-card { padding: 8px; }
+  .card-power-value { font-size: 1.1rem; padding: 3px 10px; min-width: 44px; }
+}
 /* Global override for card components to apply +5/-5 adjustment */
 .card, .sp-card {
   width: calc(var(--card-width) + 5px) !important;
