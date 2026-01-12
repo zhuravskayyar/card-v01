@@ -197,8 +197,10 @@
 
 /* Steampunk card tweaks inside deck grid */
 .deck-grid .sp-card {
-  min-height: 160px;
-  height: 160px;
+  /* use card variables and apply requested adjustments: +5px width, -5px height */
+  width: calc(var(--card-width) + 5px);
+  min-height: calc(var(--card-height) - 5px);
+  height: calc(var(--card-height) - 5px);
   border-radius: 12px;
   padding: 12px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
@@ -232,6 +234,19 @@
 @media (max-width: 480px) {
   .deck-grid .sp-card { min-height: 120px; height: 120px; }
   .card-power-value { font-size: 1.2rem; padding: 4px 12px; min-width: 48px; }
+}
+
+/* Global override for card components to apply +5/-5 adjustment */
+.card, .sp-card {
+  width: calc(var(--card-width) + 5px) !important;
+  height: calc(var(--card-height) - 5px) !important;
+}
+
+@media (max-width: 480px) {
+  .card, .sp-card {
+    width: calc(var(--card-width-mobile) + 5px) !important;
+    height: calc(var(--card-height-mobile) - 5px) !important;
+  }
 }
 
 /* Modal */
