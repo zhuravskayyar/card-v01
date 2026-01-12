@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Steampunk Menu</title>
   <link rel="stylesheet" href="css/steampunk-cards.css">
   <link rel="manifest" href="manifest.json">
@@ -123,14 +123,14 @@
         radial-gradient(900px 700px at 20% 25%, rgba(212,140,75,0.10), transparent 50%),
         radial-gradient(1000px 900px at 80% 60%, rgba(120,70,40,0.10), transparent 55%),
         linear-gradient(180deg, var(--bg-1), var(--bg-0));
-      min-height: 100vh;
+      min-height: 100dvh;
       display:block;
     }
 
     /* Phone frame */
     .phone{
       width:100vw;
-      min-height:100vh;
+      min-height:100dvh;
       padding: 0;
       position: relative;
       background: transparent;
@@ -486,6 +486,39 @@
       -webkit-overflow-scrolling: touch;
       min-height: 0;
     }
+
+    /* Global page container: responsive and centered */
+    .page {
+      width: 100%;
+      max-width: 520px; /* change to 100% to occupy full screen */
+      margin: 0 auto;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+
+    /* Compressible grid helpers for card lists */
+    .cards, .tiles, .collection-grid, .weaker-grid, .weaker-cards, .extras-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    /* Ensure items can shrink inside the grid */
+    .card, .tile, .sp-card, .weaker-card-item, .compact-card {
+      min-width: 0 !important;
+      box-sizing: border-box !important;
+    }
+
+    /* Responsive tweaks for very narrow phones */
+    @media (max-width: 360px) {
+      .page { padding: 12px; }
+      .tiles, .cards, .collection-grid { gap: 8px; }
+      .tile .label, .collection-card-name { font-size: 12px; }
+    }
+
+    /* Fluid typography */
+    .page-title { font-size: clamp(18px, 4vw, 22px); }
+    .tile .label { font-size: clamp(12px, 3.2vw, 13px); }
 
     /* Info cards */
     .info-card{
