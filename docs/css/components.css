@@ -258,11 +258,6 @@
   .deck-screen .cards-grid, .deck-screen .deck-selection { max-height: calc(844px - 220px); }
 }
 
-/* Ensure body uses dynamic viewport height unit to avoid mobile UI issues */
-body {
-  min-height: 100dvh;
-}
-
 /* Global override for card components to apply +5/-5 adjustment */
 .card, .sp-card {
   width: calc(var(--card-width) + 5px) !important;
