@@ -6140,7 +6140,9 @@
         }
 
         const offset = Math.floor(Math.random() * 201) - 100; // -100..+100
-        const targetTotal = Math.max(0, playerTotal + offset);
+        let targetTotal = Math.max(0, playerTotal + offset);
+        // Clamp enemy total power: at least 20, and no more than player's total
+        targetTotal = Math.max(20, Math.min(targetTotal, playerTotal));
 
         // pool: если мало карт - используем ALL_CARDS
         const allCards = window.ALL_CARDS || window.CARDS_COMMON || [];
