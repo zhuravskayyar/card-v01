@@ -8,6 +8,7 @@ const DROP_CONFIG = {
     R2: 15,
     R3: 15,
     R4: 10,
+    // Keep R5/R6 at zero by default to make very rare; use pity for guarantees only
     R5: 0,
     R6: 0
   },
@@ -21,8 +22,9 @@ const DROP_CONFIG = {
     enabled_until_complete: true
   },
   pity_system: {
-    legendary_guarantee_after: 40,
-    mythic_guarantee_after: 120
+    // Increase pity thresholds to make guaranteed R5/R6 extremely unlikely
+    legendary_guarantee_after: 99999,
+    mythic_guarantee_after: 999999
   }
 };
 
