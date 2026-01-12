@@ -1,19 +1,37 @@
 /* Components */
 
+:root{
+  /* safe-area + hud */
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+  --hud-offset: 84px;
+
+  /* card base (desktop) */
+  --card-w: 96px;
+  --card-h: 140px;
+  /* mobile card base override variables (will be set in media query) */
+  --card-w-mobile: 92px;
+  --card-h-mobile: 130px;
+
+  /* deltas: apply small adjustments without !important */
+  --card-w-delta: 5px;
+  --card-h-delta: -5px;
+}
+
 /* Buttons */
 .btn {
   padding: var(--space-sm) var(--space-lg);
   border-radius: var(--radius-md);
-  font-weight: 600;
-  transition: all var(--transition-base);
+  font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-sm);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.55);
   border: 1px solid rgba(242,208,122,0.22);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.55);
   position: relative;
+  transition: transform var(--transition-base), box-shadow var(--transition-base), filter var(--transition-base);
 }
 
 .btn::before {
@@ -25,9 +43,21 @@
   pointer-events: none;
 }
 
-.btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+.btn:active {
+  transform: translateY(0);
+}
+
+@media (hover: hover){
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    filter: brightness(1.05);
+  }
+}
+
+.btn:focus-visible{
+  outline: 2px solid rgba(242,208,122,0.45);
+  outline-offset: 2px;
 }
 
 .btn:active {
@@ -190,25 +220,22 @@
 /* Deck grid (3x3) layout */
 .deck-grid.grid-3x3 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
   align-items: stretch;
 }
 
-/* Make deck-grid full-bleed (stretch to viewport edges) while preserving
-   inner padding and safe-area insets. This makes the 3x3 grid reach the
-   left/right edges on narrow screens like in the mockup. */
-.deck-screen .deck-grid.grid-3x3 {
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  width: 100vw;
-  max-width: 100%;
-  box-sizing: border-box;
-  padding-left: 8px;
-  padding-right: 8px;
+/* Mobile: gentle full-bleed so cards reach near edges without 50vw hacks */
+@media (max-width: 480px) {
+  .deck-screen .deck-grid.grid-3x3 {
+    width: calc(100% + 16px);
+    margin-left: -8px;
+    margin-right: -8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    box-sizing: border-box;
+    gap: 10px;
+  }
 }
 
 /* Safe-area helpers (iOS notch / dynamic viewport) */
@@ -238,9 +265,9 @@ body {
 /* Steampunk card tweaks inside deck grid */
 .deck-grid .sp-card {
   /* use card variables and apply requested adjustments: +5px width, -5px height */
-  width: calc(var(--card-width) + 5px);
-  min-height: calc(var(--card-height) - 5px);
-  height: calc(var(--card-height) - 5px);
+  width: calc(var(--card-w) + var(--card-w-delta));
+  min-height: calc(var(--card-h) + var(--card-h-delta));
+  height: calc(var(--card-h) + var(--card-h-delta));
   border-radius: 12px;
   padding: 12px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
@@ -248,7 +275,7 @@ body {
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
 }
 
 /* Power badge on card (bottom center) */
@@ -274,10 +301,12 @@ body {
 @media (max-width: 480px) {
   .deck-grid .sp-card { min-height: 120px; height: 120px; }
   .card-power-value { font-size: 1.2rem; padding: 4px 12px; min-width: 48px; }
+  /* mobile card sizes override */
+  :root{ --card-w: var(--card-w-mobile); --card-h: var(--card-h-mobile); }
 }
 @media (max-height: 844px) {
   .deck-grid.grid-3x3 { gap: 10px; }
-  .deck-grid .sp-card { height: calc(var(--card-height) - 5px); min-height: calc(var(--card-height) - 5px); }
+  .deck-grid .sp-card { height: calc(var(--card-h) + var(--card-h-delta)); min-height: calc(var(--card-h) + var(--card-h-delta)); }
   .card-power-value { font-size: 1.4rem; padding: 4px 12px; }
   .deck-screen { overflow: hidden; }
   .deck-screen .cards-grid, .deck-screen .deck-selection { max-height: calc(844px - 220px); }
@@ -293,16 +322,16 @@ body {
   .deck-grid .sp-card { padding: 8px; }
   .card-power-value { font-size: 1.1rem; padding: 3px 10px; min-width: 44px; }
 }
-/* Global override for card components to apply +5/-5 adjustment */
-.card, .sp-card {
-  width: calc(var(--card-width) + 5px) !important;
-  height: calc(var(--card-height) - 5px) !important;
+/* Use variable-based sizing for cards (no !important). */
+.card, .sp-card{
+  width: calc(var(--card-w) + var(--card-w-delta));
+  height: calc(var(--card-h) + var(--card-h-delta));
 }
 
-@media (max-width: 480px) {
-  .card, .sp-card {
-    width: calc(var(--card-width-mobile) + 5px) !important;
-    height: calc(var(--card-height-mobile) - 5px) !important;
+@media (max-width: 480px){
+  .card, .sp-card{
+    width: calc(var(--card-w-mobile) + var(--card-w-delta));
+    height: calc(var(--card-h-mobile) + var(--card-h-delta));
   }
 }
 
@@ -436,11 +465,11 @@ body {
   font-weight: bold;
   color: white;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
 
-  /* mobile: slightly smaller text */
-  @media (max-width: 420px) {
-    font-size: 0.75rem;
-  }
+@media (max-width: 420px){
+  .health-bar-text{ font-size: 0.75rem; }
+}
 
 /* XP Bar Styles (for card upgrades) */
 .xp-row {
