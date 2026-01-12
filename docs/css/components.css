@@ -195,6 +195,30 @@
   align-items: stretch;
 }
 
+/* Safe-area helpers (iOS notch / dynamic viewport) */
+body {
+  padding-top: var(--sat);
+  padding-bottom: var(--sab);
+  min-height: 100dvh;
+  /* keep horizontal overflow hidden if needed, but allow vertical scrolling */
+  overflow-x: hidden;
+}
+
+/* If HUD is fixed, respect safe-area inset */
+.hud {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(8px + var(--sat));
+  width: min(520px, calc(100vw - 16px));
+  z-index: 9999;
+}
+
+/* Reserve space for HUD so page content is not covered */
+.page, .container, main {
+  padding-top: calc(var(--hud-offset) + var(--sat));
+}
+
 /* Steampunk card tweaks inside deck grid */
 .deck-grid .sp-card {
   /* use card variables and apply requested adjustments: +5px width, -5px height */

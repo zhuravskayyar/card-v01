@@ -6,7 +6,7 @@ body {
     radial-gradient(1000px 900px at 80% 60%, rgba(120,70,40,0.10), transparent 55%),
     linear-gradient(180deg, var(--bg-1), var(--bg-0));
   color: var(--color-text);
-  min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   font-family: Georgia, "Times New Roman", serif;
@@ -15,7 +15,7 @@ body {
 #app-shell {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100dvh;
   width: 100%;
   max-width: 420px;
   margin: 0 auto;
