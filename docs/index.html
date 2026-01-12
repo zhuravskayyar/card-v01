@@ -903,13 +903,18 @@
       overflow: hidden;
     }
 
+    /* Render full deck-style card but scaled down to fit mini tile */
     .weaker-card-visual .sp-card {
-      width: 100% !important;
-      height: 100% !important;
+      /* keep original internal layout by using scale */
+      width: 200px !important;
+      height: 280px !important;
       box-sizing: border-box !important;
-      padding: 4px !important;
+      padding: 8px !important;
       margin: 0 auto !important;
-      aspect-ratio: auto !important;
+      transform: scale(0.45);
+      transform-origin: top center;
+      will-change: transform;
+      overflow: visible !important;
     }
 
     .weaker-card-footer { display:flex; justify-content:space-between; align-items:center; gap:6px; margin-top:6px; }
