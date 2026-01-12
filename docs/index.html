@@ -1075,10 +1075,19 @@
 
     /* Альтернативно: якщо хочете стрілку під карткою (зовні) */
     .upgrade-arrow.outside {
-      bottom: -16px;         /* Виступає під карткою */
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: 100%;             /* розміщено під картою */
+      margin-top: 8px;
       background: linear-gradient(180deg, #30c85a, #0ea83a);
       border: 2px solid rgba(255, 255, 255, 0.2);
+      pointer-events: none;
+      z-index: 5;
     }
+
+    /* .card-wrapper контейнер для зовнішньої стрілки */
+    .card-wrapper { position: relative; display: inline-block; }
 
     /* Prevent iOS from stretching grid rows during viewport recalculation */
     .deck-grid {

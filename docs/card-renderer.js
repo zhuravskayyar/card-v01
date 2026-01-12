@@ -55,36 +55,35 @@ class CardRenderer {
     const showUpgrade = !!opts.showUpgrade;
 
     return `
-      <div class="sp-card ${element} ${rarity} ${showUpgrade ? 'upgradable' : ''}" 
-           data-id="${id}"
-           data-card-id="${id}"
-           data-element="${element}"
-           data-rarity="${rarity}"
-           data-power="${displayPower}"
-           data-attack="${attack}"
-           data-level="${level}"
-           data-faction="${faction}"
-           data-name="${name}">
-        
-        <!-- ДЕКОРАТИВНІ ЛІНІЇ -->
-        <div class="decor-line line-top"></div>
-        <div class="decor-line line-bottom"></div>
-        
-        <!-- БЕЙДЖ РІДКОСТІ -->
-        <div class="rarity-badge">${rarityBadge}</div>
-        
-        <!-- ВЕЛИКА ДЕТАЛЬНА ШЕСТЕРНЯ -->
-        <div class="corner-gear">
-          <div class="gear-inner">
-            ${elementIcon}
+      <div class="card-wrapper">
+        <div class="sp-card ${element} ${rarity} ${showUpgrade ? 'upgradable' : ''}" 
+             data-id="${id}"
+             data-card-id="${id}"
+             data-element="${element}"
+             data-rarity="${rarity}"
+             data-power="${displayPower}"
+             data-attack="${attack}"
+             data-level="${level}"
+             data-faction="${faction}"
+             data-name="${name}">
+          <!-- ДЕКОРАТИВНІ ЛІНІЇ -->
+          <div class="decor-line line-top"></div>
+          <div class="decor-line line-bottom"></div>
+          <!-- БЕЙДЖ РІДКОСТІ -->
+          <div class="rarity-badge">${rarityBadge}</div>
+          <!-- ВЕЛИКА ДЕТАЛЬНА ШЕСТЕРНЯ -->
+          <div class="corner-gear">
+            <div class="gear-inner">
+              ${elementIcon}
+            </div>
+          </div>
+
+          <!-- ПЛАШКА СИЛИ внизу -->
+          <div class="power-plate">
+            <div class="power-value">${displayPower}</div>
           </div>
         </div>
-
-        <!-- ПЛАШКА СИЛИ внизу -->
-        <div class="power-plate">
-          <div class="power-value">${displayPower}</div>
-        </div>
-        ${showUpgrade ? '<div class="upgrade-arrow" title="Можна прокачати">▲</div>' : ''}
+        ${showUpgrade ? '<div class="upgrade-arrow outside" title="Можна прокачати">▲</div>' : ''}
       </div>
     `;
   }
