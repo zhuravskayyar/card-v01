@@ -5534,10 +5534,24 @@
           });
         }
 
-        // Вибрати карти з 16 звичайних карт
-        const deckCardIds = profile.deckCards.map(dc => dc.id);
-        const deckCards = deckCardIds.map(cardId => getCardById(cardId))
-          .filter(card => card !== undefined);
+        // Build deck entries with resolved card data and computed power
+        const deckEntries = (profile.deckCards || [])
+          .map(dc => {
+            const card = getCardById(dc.id);
+            const level = dc.level || 1;
+            const power = card ? (window.getPower ? window.getPower(card, level) : (card.basePower || card.power || 0)) : 0;
+            return { id: dc.id, level, card, power };
+          })
+          .filter(e => e.card);
+
+        // Sort from strongest to weakest by computed power
+        deckEntries.sort((a, b) => (b.power || 0) - (a.power || 0));
+
+        // Persist sorted order into profile.deckCards so event handlers map correctly
+        profile.deckCards = deckEntries.map(e => ({ id: e.id, level: e.level }));
+        if (typeof userProfile.updateCurrentUser === 'function') userProfile.updateCurrentUser(profile);
+
+        const deckCards = deckEntries.map(e => e.card);
         
         // Перевірка чи карти знайдені
         if (deckCards.length === 0) {
