@@ -68,6 +68,23 @@
       flex-direction: column;
       align-items: stretch;
     }
+    /* Ensure the visual inside weaker-card tiles matches deck card sizing */
+    .weaker-card-visual{
+      display: block;
+      width: 100%;
+      flex: 1 1 auto;
+      align-items: center;
+      justify-content: center;
+      display: flex;
+    }
+    .weaker-card-visual .sp-card{
+      width: 100% !important;
+      max-width: 100% !important;
+      box-sizing: border-box !important;
+      padding: 4px !important;
+      aspect-ratio: 0.6 / 1 !important;
+      margin: 0 auto !important;
+    }
     .weaker-card-footer { display:flex; justify-content:space-between; align-items:center; gap:6px; margin-top:8px; }
     .weaker-card-pct { color: #c6ffb3; font-weight:700; }
     .weaker-add-btn { background:#c85; border:none; color:#111; padding:6px 8px; border-radius:6px; cursor:pointer }
