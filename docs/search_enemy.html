@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пошук ворога - Steampunk Cards (Заглушка)</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box }
+        body{ background: linear-gradient(135deg,#070504 0,#120c08 100%); color:#f4e6c6; font-family: 'Segoe UI', Tahoma, Arial; min-height:100vh; display:flex; align-items:center; justify-content:center }
+        .container{ width:92%; max-width:540px; padding:20px }
+        .title{ color:#f2d07a; font-size:1.6rem; text-transform:uppercase; letter-spacing:2px; text-align:center; margin-bottom:18px }
+        .search-container{ background:linear-gradient(135deg,rgba(18,12,8,0.92),rgba(7,5,4,0.95)); border-radius:14px; padding:22px; border:1px solid #7a5520; box-shadow:0 10px 30px rgba(0,0,0,0.7) }
+        .search-text{ color:#c59b3c; font-size:1.05rem; text-align:center; margin-bottom:14px }
+        .main-gear{ width:92px; height:92px; margin:14px auto; position:relative }
+        .gear{ position:absolute; inset:0; border-radius:50%; background: conic-gradient(#f2d07a 0 30deg,#c59b3c 30deg 60deg,#7a5520 60deg 90deg,#c59b3c 90deg 120deg,#f2d07a 120deg 150deg,#c59b3c 150deg 180deg); animation:rotate 4s linear infinite }
+        .gear-inner{ position:absolute; inset:16px; border-radius:50%; background:linear-gradient(135deg,#3a2c1a,#0a0604); border:2px solid rgba(242,208,122,0.14) }
+        .search-waves{ height:60px; margin:8px 0 18px; position:relative }
+        .wave{ position:absolute; inset:0; border:2px solid rgba(196,90,42,0.22); border-radius:50%; animation:wave 2s ease-out infinite }
+        .wave:nth-child(2){ animation-delay:.5s }
+        .wave:nth-child(3){ animation-delay:1s }
+        .progress-container{ width:100%; height:14px; border-radius:999px; overflow:hidden; background:rgba(0,0,0,0.6); border:2px solid #7a5520; box-shadow:inset 0 0 10px rgba(0,0,0,0.9); margin:12px 0 }
+        .progress-bar{ height:100%; width:0%; transform-origin:left center; transform:scaleX(0); background:linear-gradient(90deg,#c45a2a 0,#f2d07a 60%); transition:transform 600ms linear; }
+        .buttons{ display:flex; gap:12px; justify-content:center; margin-top:14px }
+        .btn{ padding:10px 18px; border-radius:8px; background:linear-gradient(135deg,rgba(242,208,122,0.08),rgba(196,90,42,0.06)); border:1px solid #c59b3c; color:#f2d07a; cursor:pointer }
+        .btn:disabled{ opacity:.5; cursor:not-allowed }
+        .search-log{ margin-top:14px; background:rgba(0,0,0,0.55); padding:10px; border-radius:8px; max-height:140px; overflow:auto; border:1px solid rgba(122,85,32,0.35) }
+        .log-entry{ color:#b8a27b; font-size:0.92rem; margin-bottom:8px; padding-left:18px; position:relative }
+        .log-entry::before{ content:'⚙️'; position:absolute; left:0 }
+        .timer{ font-family:monospace; font-size:1.6rem; color:#f2d07a; text-align:center; margin-top:10px }
+        @keyframes rotate{ 0%{transform:rotate(0)}100%{transform:rotate(360deg)} }
+        @keyframes wave{ 0%{ transform:scale(.1); opacity:1; }100%{ transform:scale(1); opacity:0 } }
+        @media(max-width:420px){ .title{font-size:1.25rem} .main-gear{width:76px;height:76px} .progress-container{height:12px} }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">⚔️ Пошук ворога — Заглушка</h1>
+        <div class="search-container" role="region" aria-label="Пошук суперника">
+            <div class="search-text" id="searchText">Сканування мережі...</div>
+            <div class="main-gear"><div class="gear"></div><div class="gear-inner"></div></div>
+            <div class="search-waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
+            <div class="progress-container" aria-hidden="true">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="timer" id="timer">00:00</div>
+            <div class="buttons">
+                <button class="btn" id="searchBtn">🔍 Почати пошук</button>
+                <button class="btn" id="cancelBtn" disabled>⏹️ Скасувати</button>
+            </div>
+            <div class="search-log" id="searchLog">
+                <div class="log-entry">Система ініціалізована</div>
+                <div class="log-entry">Перевірка підключення...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple placeholder logic adapted for integration
+        const searchBtn = document.getElementById('searchBtn');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const searchText = document.getElementById('searchText');
+        const timer = document.getElementById('timer');
+        const searchLog = document.getElementById('searchLog');
+        const progressBar = document.getElementById('progressBar');
+
+        let searchInterval = null;
+        let timeLeft = 8; // seconds for placeholder
+        let isSearching = false;
+
+        function addLogMessage(msg){ const e=document.createElement('div'); e.className='log-entry'; e.textContent=msg; searchLog.appendChild(e); searchLog.scrollTop = searchLog.scrollHeight }
+
+        function formatTime(s){ const m=Math.floor(s/60); const sec=s%60; return `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}` }
+
+        function updateTimer(){ timeLeft--; timer.textContent = formatTime(timeLeft); const pct = Math.max(0, Math.min(1, (8-timeLeft)/8)); progressBar.style.transform = `scaleX(${pct})`; if(Math.random()>0.75) addLogMessage(['Сканування мережі...','Перевірка пінг серверів...','Пошук гравців онлайн...'][Math.floor(Math.random()*3)]); if(timeLeft<=0) finishSearch() }
+
+        function startSearch(){ if(isSearching) return; isSearching=true; timeLeft=8; searchBtn.disabled=true; cancelBtn.disabled=false; searchLog.innerHTML=''; addLogMessage('🔍 Початок пошуку (заглушка)...'); searchInterval=setInterval(updateTimer,1000); updateTimer(); searchText.textContent='Пошук суперника...'; }
+
+        function finishSearch(){ clearInterval(searchInterval); isSearching=false; progressBar.style.transform='scaleX(1)'; progressBar.style.background='linear-gradient(90deg,#7aaa6f 0,#3b8c3b 100%)'; searchText.textContent='⚔️ Ворог знайдений!'; addLogMessage('✅ Ворог знайдений (заглушка)'); setTimeout(()=>{ alert('Це заглушка. Тут мав би бути перехід до арени.'); },600); searchBtn.disabled=false; cancelBtn.disabled=true }
+
+        function cancelSearch(){ if(!isSearching) return; clearInterval(searchInterval); isSearching=false; searchBtn.disabled=false; cancelBtn.disabled=true; timeLeft=0; timer.textContent='00:00'; progressBar.style.transform='scaleX(0)'; addLogMessage('⏹️ Пошук скасовано'); searchText.textContent='Пошук скасовано' }
+
+        searchBtn.addEventListener('click', startSearch);
+        cancelBtn.addEventListener('click', cancelSearch);
+
+        window.addEventListener('load', ()=>{ setTimeout(()=>{ addLogMessage('⚙️ Система готова (заглушка).'); },400) })
+    </script>
+</body>
+</html>
