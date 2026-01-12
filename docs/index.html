@@ -855,43 +855,70 @@
       border-bottom: 1px solid rgba(242,208,122,0.2);
     }
 
-    .weaker-cards {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+    /* Horizontal scrollable list for weaker/burn cards */
+    .weaker-cards,
+    .weaker-grid {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start; /* important: do not stretch rows */
+      overflow-x: auto;
+      padding-bottom: 6px;
+      -webkit-overflow-scrolling: touch;
     }
 
-    .weaker-card-item {
-      background: rgba(50,30,20,0.4);
-      border: 1px solid rgba(242,208,122,0.15);
+    /* Individual tile wrapper — fixed small card size, no flex-grow */
+    .weaker-card-tile,
+    .weaker-card {
+      flex: 0 0 auto; /* do not grow */
+      width: 92px;
+      height: 128px;
+      box-sizing: border-box;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
       border-radius: 8px;
-      padding: 10px;
-      transition: all 0.2s;
+      background: rgba(30,20,18,0.45);
+      border: 1px solid rgba(200,170,120,0.08);
+      padding: 6px;
     }
 
-    .weaker-card-item:hover {
-      border-color: rgba(242,208,122,0.3);
-      box-shadow: 0 0 10px rgba(242,208,122,0.1);
+    @media (min-width: 420px) {
+      .weaker-card-tile,
+      .weaker-card { width: 100px; height: 140px; }
     }
 
-    .weaker-card-icon {
-      font-size: 32px;
-      text-align: center;
-      margin-bottom: 6px;
+    /* Override dangerous inherited properties that stretch mini-cards */
+    .weaker-card-tile,
+    .weaker-card { height: 128px !important; min-height: 0 !important; align-self: auto !important; }
+
+    /* Visual container inside tile — ensures inner .sp-card is constrained */
+    .weaker-card-visual {
+      width: 100%;
+      height: calc(100% - 34px); /* leave room for footer */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
     }
 
-    .weaker-card-name {
-      font-size: 12px;
-      color: var(--brass-0);
-      margin-bottom: 4px;
-      text-align: center;
+    .weaker-card-visual .sp-card {
+      width: 100% !important;
+      height: 100% !important;
+      box-sizing: border-box !important;
+      padding: 4px !important;
+      margin: 0 auto !important;
+      aspect-ratio: auto !important;
     }
 
-    .weaker-card-stats {
-      font-size: 11px;
-      color: var(--muted);
-      text-align: center;
-    }
+    .weaker-card-footer { display:flex; justify-content:space-between; align-items:center; gap:6px; margin-top:6px; }
+    .weaker-card-pct { color: #c6ffb3; font-weight:700; }
+    .weaker-add-btn { background:#c85; border:none; color:#111; padding:6px 8px; border-radius:6px; cursor:pointer }
+
+    /* Fix internal badges/values so they don't overflow */
+    .weaker-card .badge, .weaker-card .corner-gear, .weaker-card .element-emoji { width:28px; height:28px; }
+    .weaker-card .value, .weaker-card .power-value { font-size:18px; line-height:1; }
 
     .no-weaker-cards {
       text-align: center;
@@ -5961,7 +5988,8 @@
               </div>`;
           }).join('');
 
-          list.innerHTML = `<div class="weaker-grid">${tiles}</div>`;
+          // Use horizontal weaker-cards container so rows don't stretch the page
+          list.innerHTML = `<div class="weaker-cards">${tiles}</div>`;
 
           // Добавляем обработчик клика на плитку: просто нажимаешь на карту — она сгорает
           list.querySelectorAll('.weaker-card-tile').forEach(tile => {
