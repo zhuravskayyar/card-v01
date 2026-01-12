@@ -6208,6 +6208,44 @@
       pendingDuel: null,
 
       createCardNode(card, isPlayer, slotIdx) {
+        // Try to reuse existing deck/card renderer so duel visuals match deck visuals
+        try {
+          const powerVal = card.power || card.attack || card.basePower || 0;
+          // If site has a deck renderer, prefer it (keeps consistent HTML)
+          if (typeof this.renderDeckCard === 'function') {
+            const html = this.renderDeckCard({ ...card, basePower: card.basePower, attack: powerVal }, card.level || 1);
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = html.trim();
+            const node = wrapper.firstElementChild || wrapper;
+            node.classList.add('duel-card');
+            if (slotIdx !== undefined) node.dataset.slot = slotIdx;
+            return node;
+          }
+
+          if (window.cardRenderer && typeof window.cardRenderer.render === 'function') {
+            const html = window.cardRenderer.render({ ...card, power: powerVal }, { level: card.level || 1, power: powerVal });
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = html.trim();
+            const node = wrapper.firstElementChild || wrapper;
+            node.classList.add('duel-card');
+            if (slotIdx !== undefined) node.dataset.slot = slotIdx;
+            return node;
+          }
+
+          if (window.createCardView) {
+            const view = window.createCardView({ ...card, power: powerVal, level: card.level || 1 });
+            if (view && view.outerHTML) {
+              // DOM element returned
+              view.classList.add('duel-card');
+              if (slotIdx !== undefined) view.dataset.slot = slotIdx;
+              return view;
+            }
+          }
+        } catch (err) {
+          console.warn('createCardNode: renderer fallback failed', err);
+        }
+
+        // Fallback minimal DOM if no renderer available
         const elementIcons = {
           fire: '<div class="element-emoji fire-emoji">🔥</div>',
           water: '<div class="element-emoji water-emoji">💧</div>',
@@ -6216,9 +6254,8 @@
         };
         const elementIcon = elementIcons[card.element] || elementIcons.fire;
         const el = document.createElement('div');
-        el.className = `sp-card ${card.element} common`;
+        el.className = `sp-card ${card.element} common duel-card`;
         if (slotIdx !== undefined) el.dataset.slot = slotIdx;
-        
         el.innerHTML = `
           <div class="corner-gear">
             ${elementIcon}
