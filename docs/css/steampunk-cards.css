@@ -710,8 +710,9 @@
 .duel-card .power-plate{
   position: absolute !important;
   bottom: 8px !important;
-  left: 8px !important;
-  width: auto !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  min-width: 38px !important;
   height: auto !important;
   border-radius: 12px !important;
   padding: 4px 10px !important;
@@ -749,3 +750,9 @@
 
 /* If grid uses .duel-grid center layout, prevent columns from stretching */
 .duel-grid .sp-card, .duel-grid .duel-card{ align-self: start; }
+
+/* Ensure power badge doesn't overlap card inner content on very small cards */
+.duel-card .sp-card &,
+.duel-card & {
+  /* no-op selector to keep ordering for future tweaks */
+}
