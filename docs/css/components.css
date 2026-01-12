@@ -195,20 +195,6 @@
   align-items: stretch;
 }
 
-/* Ensure deck screen doesn't exceed target height and allow internal adjustments */
-.deck-screen {
-  max-height: 844px;
-  box-sizing: border-box;
-  overflow: hidden;
-}
-
-/* If viewport is short, make the grid scrollable only for the selection area */
-.deck-screen .cards-grid,
-.deck-screen .deck-selection {
-  max-height: calc(844px - 260px); /* leave space for header/actions */
-  overflow: auto;
-}
-
 /* Steampunk card tweaks inside deck grid */
 .deck-grid .sp-card {
   /* use card variables and apply requested adjustments: +5px width, -5px height */
@@ -249,7 +235,6 @@
   .deck-grid .sp-card { min-height: 120px; height: 120px; }
   .card-power-value { font-size: 1.2rem; padding: 4px 12px; min-width: 48px; }
 }
-
 @media (max-height: 844px) {
   .deck-grid.grid-3x3 { gap: 10px; }
   .deck-grid .sp-card { height: calc(var(--card-height) - 5px); min-height: calc(var(--card-height) - 5px); }
@@ -257,7 +242,6 @@
   .deck-screen { overflow: hidden; }
   .deck-screen .cards-grid, .deck-screen .deck-selection { max-height: calc(844px - 220px); }
 }
-
 /* Global override for card components to apply +5/-5 adjustment */
 .card, .sp-card {
   width: calc(var(--card-width) + 5px) !important;
