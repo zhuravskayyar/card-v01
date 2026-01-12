@@ -1038,14 +1038,14 @@
     }
 
     /* Upgrade arrow on card when guaranteed level-up is possible */
-    .sp-card { position: relative; overflow: visible !important; }
+    .sp-card { position: relative; overflow: hidden; }
     .upgrade-arrow {
       position: absolute;
       left: 50%;
       transform: translate(-50%, 0);
-      bottom: -16px !important;           /* Покласти поверх карти (всередині) */
-      top: auto !important;
-      width: 32px;           /* Менший розмір */
+      bottom: 10px;           /* placed inside card instead of far outside */
+      top: auto;
+      width: 32px;
       height: 32px;
       border-radius: 50%;
       background: linear-gradient(180deg, #30c85a, #0ea83a);
@@ -1080,6 +1080,12 @@
       border: 2px solid rgba(255, 255, 255, 0.2);
     }
 
+    /* Prevent iOS from stretching grid rows during viewport recalculation */
+    .deck-grid {
+      grid-auto-rows: var(--card-h, 140px);
+      align-items: start;
+    }
+
     /* Mobile adjustments for Card Details page */
     @media (max-width: 480px) {
       #page-card-details .card-main-display {
@@ -1110,7 +1116,7 @@
       }
 
       /* Ensure upgrade arrow doesn't create extra space */
-      #page-card-details .upgrade-arrow { bottom: -16px !important; }
+      #page-card-details .upgrade-arrow { bottom: 10px; top: auto; }
 
       /* Make XP bar flexible */
       #page-card-details .card-upgrade .xp-bar { width: 100% !important; }
