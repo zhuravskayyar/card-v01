@@ -18,6 +18,15 @@ export const DuelScreen = () => {
 
   // Get player deck from store
   let playerDeck = store.get('deck');
+  // Check duel cooldown metadata (attempts + cooldown)
+  const duelMeta = store.get('duelMeta') || { attempts: 0, cooldownUntil: 0 };
+  if (duelMeta.cooldownUntil && Date.now() < duelMeta.cooldownUntil) {
+    const remaining = Math.ceil((duelMeta.cooldownUntil - Date.now()) / 1000);
+    showToast.warning(`Кд на дуелі активний: зачекайте ${remaining} с.`);
+    // redirect back to home after short delay
+    setTimeout(() => router.navigate('/'), 800);
+    return screen;
+  }
   if (!playerDeck || playerDeck.length !== 9) {
     playerDeck = balanceDeck(CARDS, 9);
   }
@@ -335,6 +344,25 @@ export const DuelScreen = () => {
         active: false
       }
     });
+
+    // Update duel attempts and cooldown: after 10 duels impose 3 minutes cooldown
+    try {
+      const meta = store.get('duelMeta') || { attempts: 0, cooldownUntil: 0 };
+      let attempts = Number(meta.attempts || 0);
+      attempts = attempts + 1;
+      if (attempts >= 10) {
+        // set 3 minute cooldown
+        const cooldownMs = 3 * 60 * 1000;
+        meta.cooldownUntil = Date.now() + cooldownMs;
+        meta.attempts = 0;
+        showToast.info('До наступної серії дуелей залишилось 3 хвилини.');
+      } else {
+        meta.attempts = attempts;
+      }
+      store.setState({ duelMeta: meta });
+    } catch (e) {
+      console.warn('Failed to update duel meta', e);
+    }
 
     router.navigate('/result');
   }
