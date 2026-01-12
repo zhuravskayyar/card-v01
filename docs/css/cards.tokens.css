@@ -1,0 +1,70 @@
+/* ===== ЄДИНІ ТОКЕНИ КАРТ ===== */
+:root {
+  /* Розміри карт */
+  --card-w-xs: 72px;
+  --card-h-xs: 96px;
+  --card-w-sm: 88px;
+  --card-h-sm: 120px;
+  --card-w-md: 96px;
+  --card-h-md: 140px;
+  --card-w-lg: 140px;
+  --card-h-lg: 200px;
+  
+  /* Внутрішні відступи */
+  --card-padding-xs: 4px;
+  --card-padding-sm: 6px;
+  --card-padding-md: 8px;
+  --card-padding-lg: 12px;
+  
+  /* Візуальні константи */
+  --card-radius: 14px;
+  --card-border: 2px;
+  --card-gap: 6px;
+  --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  
+  /* Кольори елементів */
+  --color-element-fire: #c45a2a;
+  --color-element-water: #3b6c8e;
+  --color-element-air: #9fb6c1;
+  --color-element-earth: #7a6a3a;
+  
+  /* Кольори рідкості */
+  --color-rarity-common: #b8a27b;
+  --color-rarity-uncommon: #7aaa6f;
+  --color-rarity-rare: #6fb2ff;
+  --color-rarity-epic: #b07cff;
+  --color-rarity-legendary: #ffcc66;
+  --color-rarity-mythic: #ff6b9d;
+  
+  /* Фон */
+  --color-bg-dark: #070504;
+  --color-bg-medium: #120c08;
+  --color-bg-light: #1b120c;
+  
+  /* Текст */
+  --color-text-primary: #f4e6c6;
+  --color-text-secondary: #c59b3c;
+  --color-text-muted: #b8a27b;
+  
+  /* Стани */
+  --color-selected: #f2d07a;
+  --color-disabled: #3a3328;
+  --color-locked: #2a2218;
+  --color-upgrade: #7aaa6f;
+  --color-warning: #c45a2a;
+}
+
+/* ===== АДАПТИВНІ ТОКЕНИ ===== */
+@media (max-width: 480px) {
+  :root {
+    --card-gap: 4px;
+    --card-radius: 10px;
+  }
+}
+
+@media (min-width: 768px) {
+  :root {
+    --card-gap: 12px;
+    --card-radius: 16px;
+  }
+}
