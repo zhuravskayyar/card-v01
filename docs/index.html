@@ -6107,7 +6107,7 @@
           const prog = window.getProgress ? window.getProgress(profile, dc.id) : { level: 1, xp: 0 };
           const cardLevel = prog.level;
           const power = window.getPower ? window.getPower(card, cardLevel) : Math.round(card.basePower * Math.pow(card.upgradeMult, cardLevel - 1));
-          return { id: card.id, element: card.element, power };
+          return { id: card.id, element: card.element, power, level: cardLevel };
         });
       },
 
@@ -6197,8 +6197,8 @@
           attempts++;
         }
 
-        // Map to lightweight enemy objects compatible with legacy duel
-        const enemyDeck9 = enriched.map(e => ({ id: e.src.id, element: e.src.element, power: Math.max(1, Math.round(e.power || 1)) }));
+        // Map to lightweight enemy objects compatible with legacy duel (include level)
+        const enemyDeck9 = enriched.map(e => ({ id: e.src.id, element: e.src.element, power: Math.max(1, Math.round(e.power || 1)), level: e.level || 1 }));
         return enemyDeck9;
       },
 
