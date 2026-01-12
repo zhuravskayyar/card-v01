@@ -12,6 +12,13 @@ const DROP_CONFIG = {
     R5: 0,
     R6: 0
   },
+  // Configurable post-duel drop chances (can be tuned without code changes)
+  drop_chances: {
+    // default reduced values (win / lose / draw)
+    win: 0.12,
+    lose: 0.03,
+    draw: 0.07
+  },
   element_drop_rates: {
     fire: 25,
     water: 25,
@@ -184,17 +191,12 @@ if (typeof window !== 'undefined') {
     return window.dropCardsWithOptions(profile, allCards, starterCards, count, pityCounters, {});
   };
 
-  // Lowered drop chances to reduce card drops after duels
-  const getDropChance = (result) => {
-    switch (result) {
-      // Previously 35% on win — reduce to ~12%
-      case 'win': return 0.12;
-      // Previously 10% on lose — reduce to ~3%
-      case 'lose': return 0.03;
-      // Previously 20% on draw — reduce to ~7%
-      case 'draw': return 0.07;
-      default: return 0;
-    }
+  // Read drop chance from config (allows runtime tuning)
+  const getDropChance = (result, opts = {}) => {
+    // Priority: opts.dropChances -> DROP_CONFIG.drop_chances -> hard defaults
+    const defaults = { win: 0.12, lose: 0.03, draw: 0.07 };
+    const cfg = (opts && opts.dropChances) || DROP_CONFIG.drop_chances || defaults;
+    return (cfg && (cfg[result] || 0)) || 0;
   };
 
   const shouldDrop = (result) => Math.random() < getDropChance(result);
