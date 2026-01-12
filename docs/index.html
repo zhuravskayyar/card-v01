@@ -5767,20 +5767,21 @@
         const mainDisplay = document.getElementById('card-main-info');
         if (!mainDisplay) return;
 
-        // Визуальный блок карточки — используем cardRenderer или createCardView, иначе fallback
+        // Визуальный блок карточки — используем единый рендерер (renderDeckCard) или cardRenderer/createCardView, иначе fallback
         let visualHtml = '';
-        if (window.cardRenderer && typeof window.cardRenderer.render === 'function') {
-          // Передаем power & level через opts, чтобы рендерер использовал актуальную силу
-          visualHtml = window.cardRenderer.render({ ...cardData }, { level, power });
-        } else if (window.createCardView) {
-          try {
-            // Если createCardView умеет читать поле power в объекте — прокинем его
+        try {
+          if (typeof this.renderDeckCard === 'function') {
+            visualHtml = this.renderDeckCard({ ...cardData }, level);
+          } else if (window.cardRenderer && typeof window.cardRenderer.render === 'function') {
+            // Передаем power & level через opts, чтобы рендерер использовал актуальную силу
+            visualHtml = window.cardRenderer.render({ ...cardData }, { level, power });
+          } else if (window.createCardView) {
             const el = window.createCardView({ ...cardData, power, level });
             visualHtml = el ? el.outerHTML : '';
-          } catch (err) {
-            console.warn('createCardView failed', err);
-            visualHtml = '';
           }
+        } catch (err) {
+          console.warn('visual card render failed', err);
+          visualHtml = '';
         }
 
         if (!visualHtml) {
