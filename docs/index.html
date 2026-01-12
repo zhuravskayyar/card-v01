@@ -951,7 +951,7 @@
       position: absolute;
       left: 50%;
       transform: translate(-50%, 0);
-      bottom: -247px !important;           /* Покласти поверх карти (всередині) */
+      bottom: -16px !important;           /* Покласти поверх карти (всередині) */
       top: auto !important;
       width: 32px;           /* Менший розмір */
       height: 32px;
@@ -986,6 +986,42 @@
       bottom: -16px;         /* Виступає під карткою */
       background: linear-gradient(180deg, #30c85a, #0ea83a);
       border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Mobile adjustments for Card Details page */
+    @media (max-width: 480px) {
+      #page-card-details .card-main-display {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+      }
+
+      #page-card-details .card-visual-area {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+      }
+
+      #page-card-details .card-visual-area .sp-card {
+        max-width: 220px !important;
+        width: 48vw !important;
+        aspect-ratio: 2 / 3 !important;
+      }
+
+      #page-card-details .card-meta {
+        width: 100% !important;
+      }
+
+      #page-card-details .card-meta .card-meta-row {
+        word-break: break-word;
+      }
+
+      /* Ensure upgrade arrow doesn't create extra space */
+      #page-card-details .upgrade-arrow { bottom: -16px !important; }
+
+      /* Make XP bar flexible */
+      #page-card-details .card-upgrade .xp-bar { width: 100% !important; }
     }
 
     #cu-upgrade-btn {

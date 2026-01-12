@@ -139,6 +139,20 @@
   animation: emoji-float 3s ease-in-out infinite;
 }
 
+/* Force-center element emoji inside corner gear to avoid visual drift */
+.corner-gear .gear-inner .element-emoji,
+.corner-gear .gear-inner .element-icon {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+}
+
 @keyframes emoji-float {
   0%, 100% { transform: translateY(0) scale(1); }
   50% { transform: translateY(-3px) scale(1.05); }
