@@ -6267,8 +6267,11 @@
           playerTotal = playerDeck9.reduce((s, c) => s + (calcPower(c, 1) || 0), 0);
         }
 
-        const offset = Math.floor(Math.random() * 41) - 20; // -20..+20
-        let targetTotal = Math.max(20, playerTotal + offset);
+        // Выбираем целевую суммарную силу врага в диапазоне [playerTotal - MAX_DIFF, playerTotal + MAX_DIFF]
+        const MAX_DIFF = 20;
+        const minTarget = Math.max(20, playerTotal - MAX_DIFF);
+        const maxTarget = Math.max(minTarget, playerTotal + MAX_DIFF);
+        const targetTotal = Math.floor(Math.random() * (maxTarget - minTarget + 1)) + minTarget;
 
         // pool: если мало карт - используем ALL_CARDS
         const allCards = window.ALL_CARDS || window.CARDS_COMMON || [];
