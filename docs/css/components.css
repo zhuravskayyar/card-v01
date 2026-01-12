@@ -187,6 +187,53 @@
 .element-lightning { background: var(--color-lightning); }
 .element-ice { background: var(--color-ice); }
 
+/* Deck grid (3x3) layout */
+.deck-grid.grid-3x3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  align-items: stretch;
+}
+
+/* Steampunk card tweaks inside deck grid */
+.deck-grid .sp-card {
+  min-height: 160px;
+  height: 160px;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: visible;
+}
+
+/* Power badge on card (bottom center) */
+.card-power-value {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.6rem;
+  color: #f7e0a2;
+  font-weight: 800;
+  font-family: Georgia, serif;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.7);
+  background: linear-gradient(180deg, rgba(66,48,30,0.85), rgba(28,20,12,0.95));
+  border: 1px solid rgba(242,208,122,0.18);
+  border-radius: 18px;
+  padding: 6px 16px;
+  min-width: 56px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+
+@media (max-width: 480px) {
+  .deck-grid .sp-card { min-height: 120px; height: 120px; }
+  .card-power-value { font-size: 1.2rem; padding: 4px 12px; min-width: 48px; }
+}
+
 /* Modal */
 .modal-backdrop {
   position: fixed;

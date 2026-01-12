@@ -47,25 +47,7 @@ export const createCardView = (card, options = {}) => {
 
   // Power (attack or basePower)
   const power = card.attack || card.basePower || 0;
-  const powerDiv = dom.create('div', {
-    style: {
-      position: 'absolute',
-      bottom: '24px',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      fontSize: '2.2rem',
-      color: '#f2d07a',
-      fontWeight: 'bold',
-      fontFamily: 'Georgia, serif',
-      textShadow: '0 2px 8px #000, 0 0 1px #fff2',
-      background: 'rgba(0,0,0,0.12)',
-      borderRadius: '10px',
-      padding: '2px 18px',
-      minWidth: '60px',
-      textAlign: 'center',
-      boxShadow: '0 2px 8px #0002'
-    }
-  }, [String(power)]);
+  const powerDiv = dom.create('div', { className: 'card-power-value' }, [String(power)]);
   cardEl.appendChild(powerDiv);
 
   return cardEl;
