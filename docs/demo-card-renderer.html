@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Єдиний рендерер карт - Демо</title>
+    <link rel="stylesheet" href="css/cards.tokens.css">
+    <link rel="stylesheet" href="css/cards.component.css">
+    <style>
+        /* demo-specific minor layout tweaks */
+        body { margin:0; padding:20px; background:#070504; color:var(--color-text-primary, #f4e6c6); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif }
+        .demo-section{ margin-bottom:40px; padding:20px; background:rgba(18,12,8,0.5); border-radius:12px }
+        .demo-title{ color:var(--color-selected,#f2d07a); margin-bottom:12px; font-size:1.5rem }
+        .controls{ display:flex; gap:10px; margin:12px 0; flex-wrap:wrap }
+        button{ padding:8px 16px; background:var(--color-text-secondary,#c59b3c); border:none; border-radius:6px; color:#070504; font-weight:700; cursor:pointer }
+        button:hover{ filter:brightness(1.05) }
+        .card-collection{ display:grid; grid-template-columns: repeat(auto-fill,minmax(100px,1fr)); gap:12px; margin-top:12px }
+        .demo-hint{ color:var(--color-text-muted,#b8a27b); font-size:0.9rem; margin-top:10px }
+    </style>
+</head>
+<body>
+    <div class="demo-section">
+        <h1 class="demo-title">🎴 Єдиний рендерер карт - Демонстрація</h1>
+        <p class="demo-hint">Натисніть на карти, щоб виділити/зняти виділення. Перевірте різні режими відображення:</p>
+        <div class="controls">
+            <button onclick="renderDemoCards()">🃏 Показати карти</button>
+            <button onclick="renderMobileGrid()">📱 Сітка 3x3</button>
+            <button onclick="renderHorizontalList()">📜 Горизонтальний список</button>
+            <button onclick="renderLargeCard()">🔍 Велика карта</button>
+            <button onclick="clearContainer()">🗑️ Очистити</button>
+        </div>
+        <div id="demo-container"></div>
+    </div>
+
+    <script src="js/ui/CardRenderer.js"></script>
+    <script>
+        // demo data and helper functions
+        const demoCards = [
+            { id:'fire_legendary_1', name:'Фенікс', element:'FIRE', rarity:'legendary', level:10, xp:450, xpMax:500, power:156, artUrl:'', isLocked:false },
+            { id:'water_rare_1', name:'Тритон', element:'WATER', rarity:'rare', level:5, xp:120, xpMax:200, power:89, isLocked:false },
+            { id:'air_epic_1', name:'Вихор', element:'AIR', rarity:'epic', level:8, xp:300, xpMax:350, power:124, isLocked:false },
+            { id:'earth_uncommon_1', name:'Голем', element:'EARTH', rarity:'uncommon', level:3, xp:40, xpMax:100, power:67, isLocked:true },
+            { id:'fire_common_1', name:'Іскра', element:'FIRE', rarity:'common', level:1, xp:10, xpMax:50, power:42, isLocked:false },
+            { id:'water_mythic_1', name:'Левіафан', element:'WATER', rarity:'mythic', level:15, xp:780, xpMax:800, power:210, isLocked:false },
+            { id:'air_rare_2', name:'Вітрило', element:'AIR', rarity:'rare', level:6, xp:150, xpMax:250, power:95, isLocked:false },
+            { id:'earth_epic_1', name:'Титан', element:'EARTH', rarity:'epic', level:12, xp:600, xpMax:700, power:180, isLocked:false }
+        ];
+
+        function renderDemoCards(){
+            const container = document.getElementById('demo-container');
+            container.innerHTML = '<h3>🎴 Колекція карт (різні розміри)</h3><div class="card-collection"></div>';
+            const collectionEl = container.querySelector('.card-collection');
+            demoCards.forEach((card,index)=>{
+                const size = ['xs','sm','md'][index%3];
+                const el = CardRenderer.renderCard(card,{ size, showPower:true, showElement:true, showLevel:true, showXp:true, interactive:true, highlight: index===0 ? 'upgrade' : 'none' });
+                collectionEl.appendChild(el);
+                el.addEventListener('click',()=>el.classList.toggle('c-card--selected'));
+            });
+            container.innerHTML += '<p class="demo-hint">Карти мають різні розміри: XS, SM, MD. Клікніть, щоб виділити.</p>';
+        }
+
+        function renderMobileGrid(){ const container=document.getElementById('demo-container'); container.innerHTML='<h3>📱 Мобільна сітка 3x3</h3>'; const grid=CardRenderer.renderMobileGrid(demoCards.slice(0,6),{ interactive:true, showPower:true, showElement:true }); container.appendChild(grid); grid.querySelectorAll('.c-card').forEach(c=>c.addEventListener('click',()=>c.classList.toggle('c-card--selected'))); }
+        function renderHorizontalList(){ const container=document.getElementById('demo-container'); container.innerHTML='<h3>📜 Горизонтальний список</h3><div class="horizontal-card-list"></div>'; const list=container.querySelector('.horizontal-card-list'); demoCards.forEach(card=>{ const el=CardRenderer.renderCard(card,{ size:'xs', variant:'compact', showPower:true, showElement:true, showLevel:false, showXp:false }); list.appendChild(el); el.addEventListener('click',()=>el.classList.toggle('c-card--selected')); }); }
+        function renderLargeCard(){ const container=document.getElementById('demo-container'); container.innerHTML='<h3>🔍 Велика карта</h3>'; const el=CardRenderer.renderCard(demoCards[0],{ size:'lg', showPower:true, showElement:true, showLevel:true, showXp:true, interactive:false }); container.appendChild(el); }
+        function clearContainer(){ document.getElementById('demo-container').innerHTML='<p class="demo-hint">Контейнер очищено.</p>'; }
+        document.addEventListener('DOMContentLoaded', renderDemoCards);
+    </script>
+</body>
+</html>
