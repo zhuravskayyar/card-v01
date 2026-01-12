@@ -1359,6 +1359,24 @@
       background: linear-gradient(135deg, #3498db, #2980b9);
     }
 
+    /* Product visual: scale deck-style .sp-card to match deck appearance */
+    .product-icon.product-mini {
+      width: 120px;
+      height: 168px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: visible;
+      margin-right: 6px;
+    }
+    .product-icon.product-mini .sp-card {
+      width: 200px !important;
+      height: 280px !important;
+      transform: scale(0.45);
+      transform-origin: top center;
+      pointer-events: none;
+    }
+
     @keyframes pulse-badge {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.05); }
@@ -4908,7 +4926,7 @@
           ? allCards 
           : allCards.filter(c => c.element === elementFilter);
 
-        // Display cards with prices (use cardRenderer/createCardView if available)
+        // Display cards with prices (prefer deck renderer to ensure identical visuals)
         filteredCards.forEach(card => {
           const cardDiv = document.createElement('div');
           cardDiv.className = 'product-card';
@@ -4921,9 +4939,18 @@
             cores: Math.max(1, Math.ceil(displayPower / 3))
           };
 
-          // Render visual: prefer cardRenderer, then createCardView, fallback to element emoji
+          // Render visual: prefer the site's deck renderer so shop cards match deck visuals
           let visualHtml = '';
-          if (window.cardRenderer && typeof window.cardRenderer.render === 'function') {
+          try {
+            if (typeof this.renderDeckCard === 'function') {
+              visualHtml = this.renderDeckCard(card, 1);
+            }
+          } catch (err) {
+            console.warn('renderDeckCard failed for shop card', card.id, err);
+            visualHtml = '';
+          }
+
+          if (!visualHtml && window.cardRenderer && typeof window.cardRenderer.render === 'function') {
             try {
               visualHtml = window.cardRenderer.render({ ...card, power: displayPower });
             } catch (err) {
@@ -4931,6 +4958,7 @@
               visualHtml = '';
             }
           }
+
           if (!visualHtml && window.createCardView) {
             try {
               const el = window.createCardView(card);
@@ -4939,12 +4967,13 @@
               console.warn('createCardView failed for shop card', card.id, err);
             }
           }
+
           if (!visualHtml) {
             const elementEmoji = this.getElementEmoji(card.element);
             visualHtml = `<div class="product-icon">${elementEmoji}</div>`;
           } else {
-            // wrap visual into container matching product-icon slot
-            visualHtml = `<div class="product-icon">${visualHtml}</div>`;
+            // wrap visual into container matching product-icon slot and mark as mini
+            visualHtml = `<div class="product-icon product-mini">${visualHtml}</div>`;
           }
 
           cardDiv.innerHTML = `
