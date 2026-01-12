@@ -2667,7 +2667,7 @@
 
       /* Allow hands to scroll horizontally on very narrow screens */
       .enemy-hand, .player-hand {
-        gap: 8px;
+        gap: 6px;
         justify-content: flex-start;
         overflow-x: auto;
         padding: 6px 4px;
@@ -2676,11 +2676,32 @@
 
       /* Make cards smaller and responsive inside duel hands */
       .duel-hand .sp-card, .enemy-hand .sp-card, .player-hand .sp-card {
-        width: 34vw !important;
-        max-width: 140px !important;
+        width: 30vw !important;
+        max-width: 120px !important;
         height: auto !important;
         aspect-ratio: 2 / 3 !important;
+        padding: 6px !important;
+        border-radius: 12px !important;
       }
+
+      /* Tighter container paddings to use more screen space */
+      .page-content { padding-left: 8px !important; padding-right: 8px !important; }
+
+      /* Make multiplier buttons compact */
+      .duel-multipliers .pill, .duel-multipliers button {
+        padding: 8px 10px !important;
+        font-size: 13px !important;
+        border-radius: 8px !important;
+      }
+
+      /* Reduce avatar size and hp bar font on mobile */
+      .hud-status .avatar { width:46px; height:46px; }
+      .hp-label { font-size:12px; }
+      .duel-hp { padding: 8px; font-size:14px; }
+
+      /* Reduce spacing around result/preduel panels */
+      .preduel-row { padding: 6px 10px; }
+      .duel-battle-cards { gap: 8px; }
     }
 
     /* HUD: avatar + HP bar for enemy/player */
