@@ -152,7 +152,57 @@ export const DuelScreen = () => {
       return copy;
     });
 
-    enemyDeck = balanceDeck(finalSelected, 9);
+    // Ensure enemy total does not exceed playerTotal + 20
+    const enemyTotal = (arr) => arr.reduce((s, c) => s + (c.attack || c.power || 0), 0);
+    const cap = Math.max(0, playerTotal + 20);
+    let adjusted = finalSelected.slice();
+    let curTotal = enemyTotal(adjusted);
+
+    // If enemy is too strong, try to lower levels (reduce power) until under cap
+    if (curTotal > cap) {
+      // Build mutable representation with level and src
+      const mutable = adjusted.map(c => ({ src: c, level: c.level || 1 }));
+      let attempts = 0;
+      const maxReduceAttempts = 1000;
+      while (curTotal > cap && attempts < maxReduceAttempts) {
+        // find card which when decreased by 1 reduces total the most
+        let bestIdx = -1;
+        let bestDrop = 0;
+        for (let i = 0; i < mutable.length; i++) {
+          const m = mutable[i];
+          if ((m.level || 1) <= 1) continue;
+          const currentPower = calcPower(m.src, m.level) || (m.src.attack || m.src.basePower || 0);
+          const lowerPower = calcPower(m.src, m.level - 1) || (m.src.attack || m.src.basePower || 0);
+          const drop = currentPower - lowerPower;
+          if (drop > bestDrop) { bestDrop = drop; bestIdx = i; }
+        }
+        if (bestIdx === -1 || bestDrop <= 0) break;
+        mutable[bestIdx].level = Math.max(1, mutable[bestIdx].level - 1);
+        // rebuild adjusted and curTotal
+        adjusted = mutable.map(m => {
+          const copy = Object.assign({}, m.src);
+          copy.level = m.level || 1;
+          const p = calcPower(m.src, copy.level) || (m.src.attack || m.src.basePower || 0);
+          copy.attack = p; copy.power = p; copy.stats = { ...(copy.stats || {}), power: p };
+          return copy;
+        });
+        curTotal = enemyTotal(adjusted);
+        attempts++;
+      }
+      // if still too strong, as a fallback clamp by scaling down top cards to level 1
+      if (curTotal > cap) {
+        adjusted = adjusted.map(c => {
+          const copy = Object.assign({}, c);
+          copy.level = 1;
+          const p = calcPower(copy, 1) || (copy.attack || copy.basePower || 0);
+          copy.attack = p; copy.power = p; copy.stats = { ...(copy.stats || {}), power: p };
+          return copy;
+        });
+        curTotal = enemyTotal(adjusted);
+      }
+    }
+
+    enemyDeck = balanceDeck(adjusted, 9);
     console.log('[DUEL] playerTotal', playerTotal, 'offset', offset, 'target', targetTotal, 'enemyTotalApprox', finalSelected.reduce((s,c)=>s+(c.attack||0),0));
   } catch (err) {
     console.warn('Enemy adaptation failed, using default pool', err);
