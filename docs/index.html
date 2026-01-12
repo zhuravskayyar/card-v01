@@ -4670,8 +4670,10 @@
       
       updateProfilePage() {
         const profile = userProfile.getProfile();
-        document.getElementById('profile-level').textContent = profile.level;
-        document.getElementById('profile-xp').textContent = `${profile.xp}/100`;
+        const lvl = profile.level || 1;
+        const need = this.xpNeededForLevel(lvl);
+        document.getElementById('profile-level').textContent = String(lvl);
+        document.getElementById('profile-xp').textContent = `${profile.xp || 0}/${need}`;
         document.getElementById('profile-wins').textContent = profile.wins;
         document.getElementById('profile-losses').textContent = profile.losses;
         document.getElementById('profile-games').textContent = profile.gamesPlayed;
