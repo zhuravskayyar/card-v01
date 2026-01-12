@@ -5902,15 +5902,29 @@
             const xpGain = cardPower || 10;
             const pct = Math.max(0, Math.min(100, Math.round((xpGain / need) * 100)));
 
-            // Рендер через cardRenderer если доступен
+            // Use same renderer as deck to ensure visuals match deck cards
             let cardHtml = '';
-            if (window.cardRenderer && typeof window.cardRenderer.render === 'function') {
-              cardHtml = window.cardRenderer.render({ ...card, power: cardPower });
-            } else if (window.createCardView) {
-              const el = window.createCardView(card);
-              cardHtml = el ? el.outerHTML : '';
-            } else {
-              // fallback минимальный визуал
+            try {
+              const candProg = (window.getProgress && profile) ? (window.getProgress(profile, card.id) || { level: 1 }) : { level: 1 };
+              // Prefer the site's deck renderer so weaker-card tiles look identical to deck cards
+              if (typeof this.renderDeckCard === 'function') {
+                cardHtml = this.renderDeckCard(card, candProg.level || 1);
+              } else if (window.cardRenderer && typeof window.cardRenderer.render === 'function') {
+                cardHtml = window.cardRenderer.render({ ...card, power: cardPower });
+              } else if (window.createCardView) {
+                const el = window.createCardView(card);
+                cardHtml = el ? el.outerHTML : '';
+              } else {
+                // fallback минимальный визуал
+                cardHtml = `
+                  <div class="sp-card ${card.element || ''}">
+                    <div class="corner-gear">${card.element || ''}</div>
+                    <div class="power-plate"><div class="power-value">${cardPower}</div></div>
+                    <div class="card-name">${card.name}</div>
+                  </div>`;
+              }
+            } catch (err) {
+              console.warn('weaker card render failed, fallback used', err);
               cardHtml = `
                 <div class="sp-card ${card.element || ''}">
                   <div class="corner-gear">${card.element || ''}</div>
