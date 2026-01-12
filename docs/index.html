@@ -298,11 +298,19 @@
     }
     .statusbar > span{
       display:block; height:100%;
-      width: 78%;
-      background:
-        linear-gradient(90deg, rgba(255,220,140,0.10), rgba(255,210,120,0.25)),
-        linear-gradient(90deg, #4f2a12, #b56a33 40%, #f2d07a 75%, #c59b3c);
-      box-shadow: 0 0 14px rgba(255,210,120,0.25);
+      width: 0%;
+      transition: width 360ms ease, box-shadow 180ms ease;
+      background: linear-gradient(90deg, #ffe082 0%, #ffd54f 50%, #ffd740 100%);
+      box-shadow: 0 0 18px rgba(255,200,60,0.28), inset 0 -4px 12px rgba(255,235,170,0.12);
+      border-radius: 999px;
+    }
+
+    /* subtle darker track overlay for contrast */
+    .statusbar::after{
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.18));
+      mix-blend-mode: multiply;
     }
 
     /* Tiles grid */
