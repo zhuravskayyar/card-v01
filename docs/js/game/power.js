@@ -19,16 +19,22 @@
  * @returns {number} округлена сила карти
  */
 function getPower(card, level = 1) {
-  if (!card || !card.basePower) {
-    console.warn('Invalid card or missing basePower:', card);
+  if (!card) {
+    console.warn('Invalid card passed to getPower:', card);
+    return 0;
+  }
+
+  // Support cards that use `power` or `basePower` fields
+  const base = (typeof card.basePower === 'number') ? card.basePower : (typeof card.power === 'number' ? card.power : null);
+  if (base === null) {
+    console.warn('Invalid card or missing basePower/power:', card);
     return 0;
   }
 
   const lvl = Math.max(1, Math.floor(level));
   const multiplier = card.upgradeMult || 1.1;
-  
-  // Формула: basePower * (mult)^(level-1)
-  const power = card.basePower * Math.pow(multiplier, lvl - 1);
+  // Формула: base * (mult)^(level-1)
+  const power = base * Math.pow(multiplier, lvl - 1);
   return Math.round(power);
 }
 
@@ -88,7 +94,7 @@ function getPowerGainPercent(card, fromLevel, toLevel) {
  * @returns {number} базова сила
  */
 function getBasePower(card) {
-  return card?.basePower || 0;
+  return (card && (typeof card.basePower === 'number' ? card.basePower : (typeof card.power === 'number' ? card.power : 0))) || 0;
 }
 
 /**
