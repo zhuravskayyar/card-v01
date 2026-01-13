@@ -16,8 +16,6 @@
 }
 
 
-.battle-card { outline: 1px solid red; }
-.deck-card { outline: 1px solid green; }
 /* --- MOBILE DUEL GRID --- */
 .duel-deck.mobile-grid {
   display: grid;
