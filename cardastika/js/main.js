@@ -1,3 +1,77 @@
+// === PATCH: діагностика унікальності uid ===
+function assertUniqueUIDs(arr, label="list") {
+  const seen = new Set();
+  const dup = [];
+  for (const c of arr || []) {
+    if (!c?.uid) continue;
+    if (seen.has(c.uid)) dup.push(c.uid);
+    seen.add(c.uid);
+  }
+  if (dup.length) {
+    console.error(`❌ Duplicate uids in ${label}:`, dup);
+  } else {
+    console.log(`✅ All uids unique in ${label}`);
+  }
+}
+// === PATCH: міграція старих колод до uid-моделі ===
+function migrateDeckToInstances(profile) {
+  if (!profile) return profile;
+  // 1) deckCards
+  if (Array.isArray(profile.deckCards)) {
+    profile.deckCards = profile.deckCards.map((c) => {
+      if (c && c.uid && c.cardId) return c;
+      const cardId = c.cardId || c.id;
+      const inst = createCardInstance(cardId, {
+        level: c.level ?? 1,
+        xp: c.xp ?? 0,
+        power: c.power ?? (window.getCardById ? (window.getCardById(cardId)?.basePower ?? 0) : 0)
+      });
+      return inst;
+    });
+  }
+  // 2) collectionCards
+  if (Array.isArray(profile.collectionCards)) {
+    profile.collectionCards = profile.collectionCards.map((c) => {
+      if (c && c.uid && c.cardId) return c;
+      const cardId = c.cardId || c.id;
+      return createCardInstance(cardId, {
+        level: c.level ?? 1,
+        xp: c.xp ?? 0,
+        power: c.power ?? (window.getCardById ? (window.getCardById(cardId)?.basePower ?? 0) : 0)
+      });
+    });
+  }
+  // 3) унікальність uid
+  const seen = new Set();
+  const fixUIDs = (arr) => arr.map((c) => {
+    if (!c.uid || seen.has(c.uid)) c.uid = genUID("card");
+    seen.add(c.uid);
+    return c;
+  });
+  if (Array.isArray(profile.deckCards)) profile.deckCards = fixUIDs(profile.deckCards);
+  if (Array.isArray(profile.collectionCards)) profile.collectionCards = fixUIDs(profile.collectionCards);
+  return profile;
+}
+// === PATCH: генератор uid та createCardInstance ===
+function genUID(prefix = "c") {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
+    return `${prefix}_${crypto.randomUUID()}`;
+  }
+  return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function createCardInstance(cardId, overrides = {}) {
+  const cardData = window.getCardById ? window.getCardById(cardId) : null;
+  const basePower = cardData?.basePower ?? 0;
+  return {
+    uid: genUID("card"),
+    cardId,
+    level: 1,
+    xp: 0,
+    power: basePower,
+    ...overrides
+  };
+}
 // Main entry point - Bootstrap application
 import { router } from './core/router.js';
 import { store } from './core/store.js';
@@ -65,16 +139,28 @@ const initializeFirstTime = () => {
 
 // Load user data into store
 const loadUserData = () => {
-  const profile = userStorage.getProfile();
-  const collection = collectionStorage.getCollection();
-  const deckIds = deckStorage.getDeck();
-  const deck = deckIds.map(id => getCardById(id)).filter(Boolean);
-
+  let profile = userStorage.getProfile();
+  profile = migrateDeckToInstances(profile);
+  userStorage.saveProfile(profile);
+  // Для backward compatibility: колекція та колода як масив id (старий формат)
+  let collection = collectionStorage.getCollection();
+  if (collection.length && typeof collection[0] === 'string') {
+    collection = collection.map(id => createCardInstance(id));
+    collectionStorage.saveCollection(collection);
+  }
+  let deck = deckStorage.getDeck();
+  if (deck.length && typeof deck[0] === 'string') {
+    deck = deck.map(id => createCardInstance(id));
+    deckStorage.saveDeck(deck);
+  }
   store.setState({
     user: profile,
     collection,
     deck
   });
+  // Діагностика унікальності uid
+  assertUniqueUIDs(deck, "store.deck");
+  assertUniqueUIDs(collection, "store.collection");
 };
 
 // Register all routes

@@ -6,6 +6,8 @@ import { createButton } from '../components/Button.js';
 import { createDeckGrid, createSelectableDeckGrid } from '../components/DeckGrid.js';
 import { showToast } from '../components/Toast.js';
 import { CARDS, getAllCardIds } from '../../data/cards.js';
+// Для патчу uid
+import { genUID, createCardInstance } from '../../main.js';
 import { balanceDeck } from '../../game/deck.js';
 import { deckStorage } from '../../core/storage.js';
 
@@ -92,7 +94,12 @@ export const DeckScreen = () => {
   const screen = dom.create('div', { className: 'deck-screen' });
 
   // Load saved deck or create new one
-  let selectedCards = deckStorage.getDeck().map(id => CARDS.find(c => c.id === id)).filter(Boolean);
+  let selectedCards = deckStorage.getDeck();
+  // Якщо старий формат (масив id), мігруємо
+  if (selectedCards.length && typeof selectedCards[0] === 'string') {
+    selectedCards = selectedCards.map(id => createCardInstance(id));
+    deckStorage.saveDeck(selectedCards);
+  }
   // Ensure deck cards are shown in descending order by power (attack or basePower)
   const sortByPowerDesc = (arr) => arr.slice().sort((a, b) => {
     const va = (a && (a.attack || a.basePower)) || 0;
@@ -128,8 +135,8 @@ export const DeckScreen = () => {
 
   const previewGrid = createDeckGrid(selectedCards, {
     onCardClick: (card) => {
-      // Remove card from deck
-      selectedCards = selectedCards.filter(c => c.id !== card.id);
+      // Remove card from deck по uid
+      selectedCards = selectedCards.filter(c => c.uid !== card.uid);
       render();
       showToast.info(`${card.name} видалено з колоди`);
     }
@@ -167,11 +174,11 @@ export const DeckScreen = () => {
     deckPreview.appendChild(dom.create('h3', {}, ['Поточна колода']));
     const newPreviewGrid = createDeckGrid(sortByPowerDesc(selectedCards), {
       onCardClick: (card) => {
-        selectedCards = selectedCards.filter(c => c.id !== card.id);
+        selectedCards = selectedCards.filter(c => c.uid !== card.uid);
         render();
         showToast.info(`${card.name} видалено з колоди`);
       },
-      allPlayerCards: CARDS // передаємо всі карти гравця для визначення canUpgrade
+      allPlayerCards: selectedCards // для canUpgrade тепер екземпляри
     });
     deckPreview.appendChild(newPreviewGrid);
 
@@ -249,26 +256,25 @@ export const DeckScreen = () => {
 
     // Update selection
     dom.clear(selectionContainer);
+    // filteredCards — масив CardData, треба створювати інстанси
     const selection = createSelectableDeckGrid(
       filteredCards,
       selectedCards,
       (card) => {
-        const isSelected = selectedCards.some(c => c.id === card.id);
-        
+        // Додаємо завжди новий інстанс навіть для дублікатів
+        const isSelected = selectedCards.some(c => c.uid === card.uid);
         if (isSelected) {
-          // Remove from deck
-          selectedCards = selectedCards.filter(c => c.id !== card.id);
+          selectedCards = selectedCards.filter(c => c.uid !== card.uid);
           showToast.info(`${card.name} видалено`);
         } else {
-          // Add to deck
           if (selectedCards.length < 9) {
-            selectedCards.push(card);
+            const newInstance = createCardInstance(card.id || card.cardId);
+            selectedCards.push(newInstance);
             showToast.success(`${card.name} додано`);
           } else {
             showToast.warning('Колода заповнена (9/9)');
           }
         }
-        
         render();
       }
     );

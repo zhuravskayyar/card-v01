@@ -95,14 +95,16 @@ export const createCardView = (card, options = {}) => {
     return dom.create('div', { className: 'card-slot deck-slot' }, ['Порожній слот']);
   }
 
-  const classes = ['sp-card', card.element];
+  const classes = ['card', 'sp-card', card.element];
   if (selected) classes.push('selected');
   if (disabled) classes.push('disabled');
 
 
   const cardEl = dom.create('div', {
     className: classes.join(' '),
-    'data-id': card.id,
+    'data-uid': card.uid,
+    'data-card-id': card.cardId || card.id,
+    id: card.uid ? `card_${card.uid}` : undefined,
     style: { position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' },
     onClick: () => {
       if (!disabled) onClick(card);
@@ -118,8 +120,8 @@ export const createCardView = (card, options = {}) => {
   iconWrap.innerHTML = `<svg viewBox="0 0 24 24" width="38" height="38" fill="none">${elementIcon}</svg>`;
   cardEl.appendChild(iconWrap);
 
-  // Power (attack or basePower)
-  const power = card.attack || card.basePower || 0;
+  // Power (instance.power)
+  const power = card.power ?? card.attack ?? card.basePower ?? 0;
   const powerDiv = dom.create('div', {
     style: {
       position: 'absolute',

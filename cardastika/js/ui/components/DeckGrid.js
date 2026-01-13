@@ -38,9 +38,9 @@ export const createDeckGrid = (cards = [], options = {}) => {
 
   for (let i = 0; i < maxCards; i++) {
     const card = cards[i];
-    const isSelected = card && selectedCards.some(c => c?.id === card.id);
+    const isSelected = card && selectedCards.some(c => c?.uid === card?.uid);
     let canUpgrade = false;
-    if (card && upgradeableIds.has(card.id)) canUpgrade = true;
+    if (card && upgradeableIds.has(card.cardId || card.id)) canUpgrade = true;
     const cardView = createCardView(card, {
       selected: isSelected,
       canUpgrade,
