@@ -121,7 +121,7 @@ import CardDetailsScreen from './ui/screens/CardDetailsScreen.js';
 
 // Initialize application
 const init = async () => {
-  console.log('🎮 Initializing Elem Clone...');
+  console.log('🎮 Initializing cardastika...');
 
   // Initialize first-time data
   initializeFirstTime();
@@ -138,7 +138,7 @@ const init = async () => {
   // Start router
   router.handleRoute();
 
-  console.log('✅ Elem Clone initialized successfully!');
+  console.log('✅ cardastika initialized successfully!');
 };
 
 // Initialize first-time user data

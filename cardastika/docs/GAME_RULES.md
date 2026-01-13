@@ -1,7 +1,7 @@
-# Elem Clone - Game Rules
+# cardastika - Game Rules
 
 ## Overview
-Elem Clone is a turn-based card dueling game where players build a deck of 9 cards with different elemental powers and battle against an AI opponent.
+cardastika is a turn-based card dueling game where players build a deck of 9 cards with different elemental powers and battle against an AI opponent.
 
 ## Game Mechanics
 
@@ -124,6 +124,6 @@ Final Damage = 20 × 1.5 = 30 damage
 - Future: Difficulty levels (Easy, Normal, Hard)
 
 ## Credits
-Game Design: Elem Clone Team
+Game Design: cardastika Team
 Version: 1.0.0 (MVP)
 Last Updated: January 2026

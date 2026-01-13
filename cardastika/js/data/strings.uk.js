@@ -2,7 +2,7 @@
 export const strings = {
   // General
   app: {
-    title: 'Elem Clone',
+    title: 'cardastika',
     loading: 'Завантаження...',
     error: 'Помилка'
   },
