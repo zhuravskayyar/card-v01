@@ -10,7 +10,7 @@ export const createDeckGrid = (cards = [], options = {}) => {
     allPlayerCards = null // новий параметр: всі карти гравця
   } = options;
 
-  const grid = dom.create('div', { className: 'deck-grid grid-3x3' });
+  const grid = dom.create('div', { className: 'cards-grid deck-grid grid-3x3' });
 
   // Для визначення canUpgrade використовуємо всі карти гравця, якщо передано
   const cardsForCheck = Array.isArray(allPlayerCards) && allPlayerCards.length > 0 ? allPlayerCards : cards;

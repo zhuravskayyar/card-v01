@@ -20,3 +20,125 @@ button.remove-from-deck {
   visibility: hidden !important;
   pointer-events: none !important;
 }
+
+/* Unified Card UI Kit variables and classes */
+:root{
+  --card-w: 124px; /* reference width for deck */
+  --card-h: 160px;
+  --card-radius: 16px;
+  --card-gap: 10px;
+}
+
+/* Grid used both in deck and duel screens */
+.cards-grid{
+  display: grid;
+  grid-template-columns: repeat(3, var(--card-w));
+  gap: var(--card-gap);
+  justify-content: center;
+  align-content: start;
+  grid-auto-rows: var(--card-h);
+}
+
+/* Base card style — prevents stretching */
+.card{
+  width: var(--card-w);
+  height: var(--card-h);
+  border-radius: var(--card-radius);
+  flex: 0 0 auto;
+  box-sizing: border-box;
+}
+
+/* Ensure variant classes inherit the base card sizing and remove transforms */
+.battle-card,
+.duel-card,
+.hand-card,
+.deck-card{
+  width: var(--card-w) !important;
+  height: var(--card-h) !important;
+  flex: 0 0 auto !important;
+  transform: none !important;
+}
+
+/* Prevent common container rules from stretching cards (override worst offenders) */
+.battle-hand > *,
+.cards-grid > *{
+  flex: 0 0 auto !important;
+}
+
+/* Screen section wrapper to align duel and deck screens */
+.screen-section{
+  max-width: calc(var(--card-w)*3 + var(--card-gap)*2);
+  margin: 0 auto;
+  padding: 8px;
+}
+
+/* =========================================================
+   SINGLE SOURCE OF TRUTH — CARD SIZE (GLOBAL PATCH)
+   ========================================================= */
+
+/* 1) Єдині змінні розміру */
+:root{
+  --card-width: 128px;   /* МІНЯЙ ТІЛЬКИ ЦЕ */
+  --card-height: 180px;  /* І ЦЕ */
+  --card-radius: 16px;
+}
+
+/* 2) УСІ можливі класи карт у проєкті */
+.card,
+.deck-card,
+.battle-card,
+.duel-card,
+.hand-card,
+.sp-card {
+  width: var(--card-width) !important;
+  min-width: var(--card-width) !important;
+  max-width: var(--card-width) !important;
+
+  height: var(--card-height) !important;
+  min-height: var(--card-height) !important;
+  max-height: var(--card-height) !important;
+
+  border-radius: var(--card-radius) !important;
+
+  flex: 0 0 auto !important;
+  box-sizing: border-box !important;
+
+  transform: none !important;
+  scale: 1 !important;
+}
+
+/* 3) Якщо розміри задавались inline-стилями — прибиваємо */
+.card[style],
+.deck-card[style],
+.battle-card[style],
+.duel-card[style],
+.hand-card[style],
+.sp-card[style] {
+  width: var(--card-width) !important;
+  height: var(--card-height) !important;
+}
+
+/* 4) Контейнери карт — ЗАБОРОНИТИ розтягування */
+.cards-grid,
+.deck-grid,
+.duel-grid,
+.battle-hand,
+.hand,
+.deck {
+  display: grid !important;
+  grid-template-columns: repeat(3, var(--card-width)) !important;
+  grid-auto-rows: var(--card-height) !important;
+  gap: 10px !important;
+  justify-content: center !important;
+  align-content: start !important;
+}
+
+/* 5) Страховка від flex-контейнерів */
+.cards-grid > *,
+.deck-grid > *,
+.duel-grid > *,
+.battle-hand > *,
+.hand > *,
+.deck > * {
+  flex: 0 0 auto !important;
+}

@@ -195,11 +195,11 @@ export const DuelScreen = () => {
 
   // --- MOBILE GRID STYLE ---
   // Використовуємо сітку як у DeckScreen, але без другого ряду, зменшена відстань, з множником
-  const playerDeckEl = dom.create('div', { className: 'duel-deck mobile-grid' });
+  const playerDeckEl = dom.create('div', { className: 'duel-deck mobile-grid cards-grid' });
   arena.appendChild(playerDeckEl);
   const vs = dom.create('div', { className: 'duel-vs' }, ['⚔️']);
   arena.appendChild(vs);
-  const enemyDeckEl = dom.create('div', { className: 'duel-deck mobile-grid' });
+  const enemyDeckEl = dom.create('div', { className: 'duel-deck mobile-grid cards-grid' });
   arena.appendChild(enemyDeckEl);
 
   // Log
