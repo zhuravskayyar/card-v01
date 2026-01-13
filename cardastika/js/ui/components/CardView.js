@@ -122,6 +122,7 @@ export const createCardView = (card, options = {}) => {
 
   // Power (instance.power)
   const power = card.power ?? card.attack ?? card.basePower ?? 0;
+  const formattedPower = (typeof window !== 'undefined' && window.formatCompact) ? window.formatCompact(power) : String(power);
   const powerDiv = dom.create('div', {
     style: {
       position: 'absolute',
@@ -140,7 +141,7 @@ export const createCardView = (card, options = {}) => {
       textAlign: 'center',
       boxShadow: '0 2px 8px #0002'
     }
-  }, [String(power)]);
+  }, [formattedPower]);
   cardEl.appendChild(powerDiv);
 
   return cardEl;
@@ -180,7 +181,7 @@ export const createCardWithTooltip = (card, options = {}) => {
         `${ELEMENT_INFO[card.element]?.name || card.element} • ${card.rarityDisplay || 'Рідкість невідома'}`
       ]),
       dom.create('div', { style: { fontSize: '12px', marginTop: '4px' } }, [
-        `⚔️ Атака: ${card.attack} | 🛡️ Захист: ${card.defense}`
+        `⚔️ Атака: ${((typeof window !== 'undefined' && window.formatCompact) ? window.formatCompact(card.attack || card.basePower || 0) : String(card.attack || card.basePower || 0))} | 🛡️ Захист: ${((typeof window !== 'undefined' && window.formatCompact) ? window.formatCompact(card.defense || 0) : String(card.defense || 0))}`
       ]),
       card.description ? dom.create('div', { 
         style: { fontSize: '11px', marginTop: '6px', opacity: '0.7', fontStyle: 'italic' }

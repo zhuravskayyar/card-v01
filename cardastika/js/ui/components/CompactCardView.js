@@ -15,7 +15,8 @@ export const createCompactCardView = (card, { bonusText, onAbsorb } = {}) => {
   cardEl.appendChild(dom.create('div', { className: 'compact-card-name' }, [card.name]));
 
   // Сила
-  cardEl.appendChild(dom.create('div', { className: 'compact-card-power' }, [`${card.attack || card.basePower}`]));
+  const compactPower = (typeof window !== 'undefined' && window.formatCompact) ? window.formatCompact(card.attack || card.basePower || 0) : String(card.attack || card.basePower || 0);
+  cardEl.appendChild(dom.create('div', { className: 'compact-card-power' }, [compactPower]));
 
   // Кнопка "Поглинути"
   const btn = dom.create('button', { className: 'absorb-btn', onClick: () => onAbsorb?.(card) }, ['Поглинути']);
