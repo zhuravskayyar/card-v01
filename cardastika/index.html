@@ -3850,13 +3850,35 @@
 
         if (!profile.deckCards) profile.deckCards = [];
 
-        const cardObj = window.getCardById && window.getCardById(cardEntry.id);
+        // Ensure we work with a proper card instance (with uid and cardId)
+        let inst;
+        if (cardEntry && (cardEntry.uid || cardEntry.cardId) && cardEntry.cardId) {
+          inst = {
+            uid: cardEntry.uid || genUID('card'),
+            cardId: cardEntry.cardId || cardEntry.id,
+            level: cardEntry.level || 1,
+            xp: cardEntry.xp || 0,
+            power: cardEntry.power || 0
+          };
+        } else {
+          inst = createCardInstance(cardEntry.id || cardEntry.cardId || cardEntry);
+          if (cardEntry.level) inst.level = cardEntry.level;
+          if (cardEntry.xp) inst.xp = cardEntry.xp;
+          if (cardEntry.power) inst.power = cardEntry.power;
+        }
+
+        // Prevent duplicate cardId in deck
+        if (profile.deckCards.some(dc => (dc.cardId || dc.id) === inst.cardId)) {
+          return { added: false, replaced: false, replacedPower: null };
+        }
+
+        const cardObj = window.getCardById && window.getCardById(inst.cardId);
         const cardPower = window.getPower
-          ? window.getPower(cardObj, cardEntry.level || 1)
-          : (cardObj ? cardObj.basePower : 0);
+          ? window.getPower(cardObj, inst.level || 1)
+          : (cardObj ? (cardObj.basePower || inst.power || 0) : (inst.power || 0));
 
         if (profile.deckCards.length < 9) {
-          profile.deckCards.push(cardEntry);
+          profile.deckCards.push(inst);
           return { added: true, replaced: false, replacedPower: null };
         }
 
@@ -3864,10 +3886,10 @@
         let weakestPower = Infinity;
 
         profile.deckCards.forEach((dc, idx) => {
-          const dcObj = window.getCardById && window.getCardById(dc.id);
+          const dcObj = window.getCardById && window.getCardById(dc.cardId || dc.id);
           const pwr = window.getPower
             ? window.getPower(dcObj, dc.level || 1)
-            : (dcObj ? dcObj.basePower : 0);
+            : (dcObj ? (dcObj.basePower || dc.power || 0) : (dc.power || 0));
 
           if (pwr < weakestPower) {
             weakestPower = pwr;
@@ -3876,11 +3898,11 @@
         });
 
         if (weakestIdx >= 0 && cardPower > weakestPower) {
-          profile.deckCards[weakestIdx] = cardEntry;
+          profile.deckCards[weakestIdx] = inst;
           return { added: false, replaced: true, replacedPower: weakestPower };
         }
 
-        return { added: false, replaced: false, replacedPower: weakestPower };
+        return { added: false, replaced: false, replacedPower: null };
       },
       
       // Compact number formatter: 1500 -> 1.5k
