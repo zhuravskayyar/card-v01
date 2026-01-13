@@ -310,8 +310,8 @@ export const DeckScreen = () => {
       size: 'lg',
       disabled: selectedCards.length !== 9,
       onClick: () => {
-        // Save player deck
-        deckStorage.saveDeck(selectedCards.map(c => c.id));
+        // Save player deck (store full instances so uid is preserved)
+        deckStorage.saveDeck(selectedCards);
         
         // Generate adaptive enemy deck
         const enemyDeck = generateAdaptiveEnemyDeck(selectedCards);
