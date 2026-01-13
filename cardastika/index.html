@@ -3905,15 +3905,23 @@
         return { added: false, replaced: false, replacedPower: null };
       },
       
-      // Compact number formatter: 1500 -> 1.5k
+      // Compact number formatter: 1500 -> 1.5k; always uses 'k' for >=1000
       formatCompact(number) {
         const n = Number(number) || 0;
+        const neg = n < 0;
         const abs = Math.abs(n);
         if (abs < 1000) return String(n);
-        let v = n / 1000;
-        if (Math.abs(v) >= 10) v = Math.round(v);
-        else v = Math.round(v * 10) / 10;
-        return `${v}k`;
+        let v = abs / 1000;
+        // show one decimal for values < 10k, integer otherwise
+        let out;
+        if (v < 10) {
+          out = Math.round(v * 10) / 10; // one decimal
+        } else {
+          out = Math.round(v); // integer
+        }
+        // strip trailing .0
+        out = String(out).replace(/\.0$/, '');
+        return (neg ? '-' : '') + out + 'k';
       },
 
       updateUI() {
@@ -3975,7 +3983,7 @@
           });
           const deckPowerHome = document.getElementById('deck-power-home');
           if (deckPowerHome) {
-            deckPowerHome.textContent = totalPower;
+            deckPowerHome.textContent = this.formatCompact ? this.formatCompact(totalPower) : String(totalPower);
           }
         }
         
@@ -4196,7 +4204,7 @@
         const profile = userProfile.getProfile();
         document.getElementById('profile-level').textContent = profile.level;
         const need = (typeof navigation !== 'undefined' && navigation.xpNeededForLevel) ? navigation.xpNeededForLevel(profile.level || 1) : 100;
-        document.getElementById('profile-xp').textContent = `${profile.xp}/${need}`;
+        document.getElementById('profile-xp').textContent = `${this.formatCompact ? this.formatCompact(profile.xp) : profile.xp}/${this.formatCompact ? this.formatCompact(need) : need}`;
         document.getElementById('profile-wins').textContent = profile.wins;
         document.getElementById('profile-losses').textContent = profile.losses;
         document.getElementById('profile-games').textContent = profile.gamesPlayed;
@@ -5008,9 +5016,9 @@
         const gearsEl = document.getElementById('deck-gears');
         const coresEl = document.getElementById('deck-cores');
         
-        if (boltsEl) boltsEl.textContent = profile.bolts || 0;
-        if (gearsEl) gearsEl.textContent = profile.gears || 0;
-        if (coresEl) coresEl.textContent = profile.cores || 0;
+        if (boltsEl) boltsEl.textContent = this.formatCompact ? this.formatCompact(profile.bolts || 0) : String(profile.bolts || 0);
+        if (gearsEl) gearsEl.textContent = this.formatCompact ? this.formatCompact(profile.gears || 0) : String(profile.gears || 0);
+        if (coresEl) coresEl.textContent = this.formatCompact ? this.formatCompact(profile.cores || 0) : String(profile.cores || 0);
 
         // Ініціалізувати карти якщо їх немає (для старих користувачів)
         if (!profile.deckCards || !profile.collectionCards) {

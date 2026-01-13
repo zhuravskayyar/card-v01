@@ -71,6 +71,26 @@ function genUID(prefix = "c") {
   return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`;
 }
 
+// Global compact formatter: 1500 -> 1.5k (always 'k' for >=1000)
+function formatCompactK(number) {
+  const n = Number(number) || 0;
+  const neg = n < 0;
+  const abs = Math.abs(n);
+  if (abs < 1000) return String(n);
+  let v = abs / 1000;
+  let out;
+  if (v < 10) out = Math.round(v * 10) / 10;
+  else out = Math.round(v);
+  out = String(out).replace(/\.0$/, '');
+  return (neg ? '-' : '') + out + 'k';
+}
+
+// expose globally for other scripts
+if (typeof window !== 'undefined') {
+  window.formatCompact = formatCompactK;
+  window.formatK = formatCompactK;
+}
+
 function createCardInstance(cardId, overrides = {}) {
   const cardData = window.getCardById ? window.getCardById(cardId) : null;
   const basePower = cardData?.basePower ?? 0;
