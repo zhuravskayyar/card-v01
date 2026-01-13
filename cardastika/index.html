@@ -3965,9 +3965,9 @@
         if (profile.deckCards && profile.deckCards.length > 0) {
           let totalPower = 0;
           profile.deckCards.forEach(dc => {
-            const card = window.getCardById && window.getCardById(dc.id);
+            const card = window.getCardById && window.getCardById(dc.cardId || dc.id);
             if (card) {
-              const prog = window.getProgress ? window.getProgress(profile, dc.id) : { level: dc.level || 1, xp: 0 };
+              const prog = window.getProgress ? window.getProgress(profile, dc.uid || dc.id) : { level: dc.level || 1, xp: 0 };
               const level = (prog && prog.level) ? prog.level : (dc.level || 1);
               const power = window.getPower ? window.getPower(card, level) : (typeof getPower === 'function' ? getPower(card, level) : 0);
               totalPower += power || 0;
@@ -5745,8 +5745,8 @@
       buildDuelDeckFromProfile(profile) {
         // Використовуємо level з progress для розрахунку сили в дуелі
         return profile.deckCards.map(dc => {
-          const card = getCardById(dc.id);
-          const prog = window.getProgress ? window.getProgress(profile, dc.id) : { level: 1, xp: 0 };
+          const card = getCardById(dc.cardId || dc.id);
+          const prog = window.getProgress ? window.getProgress(profile, dc.uid || dc.id) : { level: 1, xp: 0 };
           const cardLevel = prog.level;
           const power = window.getPower ? window.getPower(card, cardLevel) : Math.round(card.basePower * Math.pow(card.upgradeMult, cardLevel - 1));
           return { id: card.id, element: card.element, power };
@@ -5769,8 +5769,8 @@
         try {
           if (profile && profile.deckCards && profile.deckCards.length) {
             profile.deckCards.forEach(dc => {
-              const src = (window.ALL_CARDS || []).find(x => x.id === dc.id) || null;
-              const prog = window.getProgress ? window.getProgress(profile, dc.id) : { level: dc.level || 1 };
+              const src = (window.ALL_CARDS || []).find(x => x.id === (dc.cardId || dc.id)) || null;
+              const prog = window.getProgress ? window.getProgress(profile, dc.uid || dc.id) : { level: dc.level || 1 };
               const lvl = (prog && prog.level) ? prog.level : (dc.level || 1);
               if (src) playerTotal += calcPower(src, lvl) || 0;
             });

@@ -36,8 +36,8 @@ export const DuelScreen = () => {
       const profile = (typeof window !== 'undefined' && window.userProfile) ? window.userProfile.getProfile() : null;
       if (profile && profile.deckCards && profile.deckCards.length) {
         profile.deckCards.forEach(dc => {
-          const src = CARDS.find(x => x.id === dc.id) || null;
-          const prog = (typeof window !== 'undefined' && window.getProgress) ? window.getProgress(profile, dc.id) : { level: dc.level || 1 };
+          const src = CARDS.find(x => x.id === (dc.cardId || dc.id)) || null;
+          const prog = (typeof window !== 'undefined' && window.getProgress) ? window.getProgress(profile, dc.uid || dc.id) : { level: dc.level || 1 };
           const lvl = (prog && prog.level) ? prog.level : (dc.level || 1);
           if (src) playerTotal += calcPower(src, lvl) || 0;
         });
