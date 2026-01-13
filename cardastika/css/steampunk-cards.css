@@ -57,6 +57,45 @@
 .duel-deck.mobile-grid .sp-card:nth-child(5) { grid-column: 2; grid-row: 3; }
 .duel-deck.mobile-grid .sp-card:nth-child(6) { grid-column: 3; grid-row: 3; }
 
+/* Make duel cards visually match the deck grid (sizes, padding, power plate) */
+.duel-deck .sp-card,
+.duel-deck.mobile-grid .sp-card {
+  max-width: none;                 /* same as deck-grid */
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4.4;           /* tuned to match deck compact look */
+  border-radius: 16px;
+  padding: 10px;
+  overflow: hidden;
+  contain: layout paint;
+  transform: translateZ(0);
+}
+
+.duel-deck .sp-card::before,
+.duel-deck.mobile-grid .sp-card::before {
+  inset: 8px;
+  border-radius: 14px;
+}
+
+.duel-deck .sp-card::after,
+.duel-deck.mobile-grid .sp-card::after {
+  inset: 14px;
+  border-radius: 12px;
+}
+
+.duel-deck .power-plate,
+.duel-deck.mobile-grid .power-plate {
+  height: 52px;
+  bottom: 14px;
+  border-radius: 12px;
+  border-width: 1px;
+}
+
+.duel-deck .power-value,
+.duel-deck.mobile-grid .power-value {
+  font-size: clamp(1rem, 3.8vw, 1.4rem);
+}
+
 .card-multiplier {
   position: absolute;
   top: 6px;
