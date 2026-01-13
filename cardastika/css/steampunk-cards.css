@@ -1,21 +1,3 @@
-/* === ЕТАЛОННИЙ РОЗМІР КАРТИ === */
-.card {
-  width: 108px;
-  height: 168px;
-  border-radius: 14px;
-  flex: 0 0 auto;
-  box-sizing: border-box;
-}
-
-.deck-card,
-.collection-card,
-.battle-card,
-.hand-card {
-  all: unset;
-  display: block;
-}
-
-
 /* --- MOBILE DUEL GRID --- */
 .duel-deck.mobile-grid {
   display: grid;
@@ -39,6 +21,10 @@
 
 .duel-deck.mobile-grid .sp-card {
   min-width: 0;
+  width: 100%;
+  max-width: 120px;
+  aspect-ratio: 3/4;
+  height: calc(100% - 5px);
   margin: 0;
   position: relative;
 }
@@ -95,9 +81,18 @@
 /* ===== БАЗОВІ СТИЛІ ===== */
 .sp-card {
   /* make cards responsive inside grids: take full column width and preserve aspect */
-  /* універсальний клас для всіх карт */
+  width: 100%;
+  max-width: var(--card-max-width);
+  height: auto;
+  aspect-ratio: var(--card-aspect);
+  border-radius: var(--card-radius);
   position: relative;
+  padding: var(--card-pad);
+  overflow: var(--card-overflow);
   box-sizing: border-box;
+  --elem: var(--fire);
+  --rar: var(--legend);
+
   background:
     radial-gradient(circle at 25% 25%, rgba(255,220,140,.25) 0%, transparent 65%),
     radial-gradient(circle at 75% 75%, rgba(196,90,42,.15) 0%, transparent 65%),

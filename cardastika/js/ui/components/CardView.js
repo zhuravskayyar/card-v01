@@ -95,7 +95,7 @@ export const createCardView = (card, options = {}) => {
     return dom.create('div', { className: 'card-slot deck-slot' }, ['Порожній слот']);
   }
 
-  const classes = ['card', 'sp-card', card.element];
+  const classes = ['sp-card', card.element];
   if (selected) classes.push('selected');
   if (disabled) classes.push('disabled');
 

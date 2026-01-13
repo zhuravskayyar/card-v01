@@ -1,18 +1,3 @@
-// === PATCH: діагностика унікальності uid ===
-function assertUniqueUIDs(arr, label="list") {
-  const seen = new Set();
-  const dup = [];
-  for (const c of arr || []) {
-    if (!c?.uid) continue;
-    if (seen.has(c.uid)) dup.push(c.uid);
-    seen.add(c.uid);
-  }
-  if (dup.length) {
-    console.error(`❌ Duplicate uids in ${label}:`, dup);
-  } else {
-    console.log(`✅ All uids unique in ${label}`);
-  }
-}
 // === PATCH: міграція старих колод до uid-моделі ===
 function migrateDeckToInstances(profile) {
   if (!profile) return profile;
@@ -158,9 +143,6 @@ const loadUserData = () => {
     collection,
     deck
   });
-  // Діагностика унікальності uid
-  assertUniqueUIDs(deck, "store.deck");
-  assertUniqueUIDs(collection, "store.collection");
 };
 
 // Register all routes

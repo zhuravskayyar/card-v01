@@ -261,15 +261,14 @@ export const DeckScreen = () => {
       filteredCards,
       selectedCards,
       (card) => {
-        // Додаємо завжди новий інстанс навіть для дублікатів
         const isSelected = selectedCards.some(c => c.uid === card.uid);
         if (isSelected) {
           selectedCards = selectedCards.filter(c => c.uid !== card.uid);
           showToast.info(`${card.name} видалено`);
         } else {
           if (selectedCards.length < 9) {
-            const newInstance = createCardInstance(card.id || card.cardId);
-            selectedCards.push(newInstance);
+            // Додаємо новий інстанс
+            selectedCards.push(createCardInstance(card.id || card.cardId));
             showToast.success(`${card.name} додано`);
           } else {
             showToast.warning('Колода заповнена (9/9)');
